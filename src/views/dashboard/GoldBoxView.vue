@@ -166,7 +166,7 @@
                   </div> -->
                   <div class="wallet-box sell">
                     <p>موجودی صندوق طلا :</p>
-                    <p>{{ walletUser.goldWeight }} گرم</p> 
+                    <p>{{ walletUser.goldWeight }} گرم</p>
                   </div>
                   <div class="d-flex justify-space-between py-2 px-4 my-1">
                     <p class="mb-0">گرم طلا :</p>
@@ -736,7 +736,7 @@ const CompleteBuy = async (paymentMethod) => {
     }, 5000);
   } finally {
     loading.value = false;
-    Transaction();
+    buyTransaction();
   }
 };
 
@@ -789,7 +789,7 @@ const CompleteSell = async () => {
     }, 5000);
   } finally {
     sellLoading.value = false;
-    Transaction();
+    sellTransaction();
   }
 };
 
@@ -1071,11 +1071,26 @@ onUnmounted(() => {
 }
 
 .k-alert {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
+  position: fixed;
+  top: 10px;
+  right: 15%;
   font-size: 12px;
   padding: 2px !important;
+  min-width: 5rem;
+  z-index: 1000;
+  min-width: 10rem;
+}
+
+@media (min-width: 768px) {
+  .k-alert {
+    position: fixed;
+    top: 10px;
+    right: 40%;
+    font-size: 12px;
+    padding: 2px !important;
+    min-width: 5rem;
+    z-index: 1000;
+  }
 }
 
 .trade-history {

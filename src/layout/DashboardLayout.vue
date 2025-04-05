@@ -94,7 +94,10 @@
               >ثبت کارت</v-btn
             >
           </div>
-          <div class="d-flex justify-space-between justify-md-start w-100" v-else>
+          <div
+            class="d-flex justify-space-between justify-md-start w-100"
+            v-else
+          >
             <div class="assets-gold">
               <p class="ma-0">موجودی طلایی: {{ user.wallet.goldWeight }} گرم</p>
             </div>
@@ -237,7 +240,6 @@ const limitCartInput = () => {
   cardNumber.value = cardNumber.value.replace(/\D/g, "").slice(0, 16);
 };
 
-
 const submitCart = async () => {
   try {
     cartLoading.value = true;
@@ -249,7 +251,6 @@ const submitCart = async () => {
     alertSuccess.value = true;
     setTimeout(() => {
       alertSuccess.value = false;
-      
     }, 10000);
     return response;
   } catch (error) {
@@ -429,11 +430,26 @@ onMounted(() => {
 }
 
 .k-alert {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
+  position: fixed;
+  top: 10px;
+  right: 15%;
   font-size: 12px;
   padding: 2px !important;
+  min-width: 5rem;
+  z-index: 1000;
+  min-width: 10rem;
+}
+
+@media (min-width: 768px) {
+  .k-alert {
+    position: fixed;
+    top: 10px;
+    right: 40%;
+    font-size: 12px;
+    padding: 2px !important;
+    min-width: 5rem;
+    z-index: 1000;
+  }
 }
 
 .bottom-nav {

@@ -110,7 +110,7 @@
             indeterminate
             v-if="ChartLoading"
           ></v-progress-circular>
-          <p class="number" direction="ltr" v-else>{{ wallet.monthlyProfit }} ٪</p>
+          <p class="number ltr" v-else>{{ wallet.monthlyProfit }} ٪</p>
         </div>
       </div>
     </v-col>
@@ -355,8 +355,8 @@ const GetChartData = async () => {
       datasets: [
         {
           data: [...response.buyInMonth.data],
-          label:'خرید ماهانه',
-          backgroundColor: "#00603A"
+          label: "خرید ماهانه",
+          backgroundColor: "#00603A",
         },
       ],
     };
@@ -366,8 +366,8 @@ const GetChartData = async () => {
       datasets: [
         {
           data: [...response.monthlyPrice.data],
-          label:'قیمت ماهانه',
-          backgroundColor: "#00603A"
+          label: "قیمت ماهانه",
+          backgroundColor: "#00603A",
         },
       ],
     };
@@ -553,5 +553,9 @@ onMounted(() => {
   font-size: 15px;
   font-weight: 300;
   margin-top: 0.4rem;
+}
+
+.ltr {
+  direction: ltr;
 }
 </style>
