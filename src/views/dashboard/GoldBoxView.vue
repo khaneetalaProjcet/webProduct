@@ -680,10 +680,11 @@ const buyGoldweightConvert = () => {
     buyInfo.value.goldWeight * goldPriceLive.value.buyPrice
   );
 
-  const calculatedPrice = parseInt(buyInfo.value.goldWeight * goldPriceLive.value.buyPrice);
+  const calculatedPrice = parseInt(
+    buyInfo.value.goldWeight * goldPriceLive.value.buyPrice
+  );
   buyInfo.value.goldprice = formatNumberWithCommas(calculatedPrice);
 };
-
 
 const sellGoldpriceConvert = (e) => {
   // sellInfo.value.goldPrice = sellInfo.value.goldPrice.replace(/[^0-9]/g, "");
@@ -691,13 +692,13 @@ const sellGoldpriceConvert = (e) => {
   //   sellInfo.value.goldPrice / goldPriceLive.value.sellPrice
   // ).toFixed(3);
 
-
-
-
   const cursorPosition = e.target.selectionStart;
   const originalLength = sellInfo.value.goldPrice.length;
 
-  const rawValue = removeCommas(sellInfo.value.goldPrice).replace(/[^0-9]/g, "");
+  const rawValue = removeCommas(sellInfo.value.goldPrice).replace(
+    /[^0-9]/g,
+    ""
+  );
   const numericValue = parseInt(rawValue || 0);
 
   sellInfo.value.goldWeight = (
@@ -732,8 +733,9 @@ const sellGoldweightConvert = () => {
     sellInfo.value.goldWeight * goldPriceLive.value.sellPrice
   );
 
-  
-  const calculatedPrice = parseInt(sellInfo.value.goldWeight * goldPriceLive.value.sellPrice);
+  const calculatedPrice = parseInt(
+    sellInfo.value.goldWeight * goldPriceLive.value.sellPrice
+  );
   sellInfo.value.goldPrice = formatNumberWithCommas(calculatedPrice);
 };
 
@@ -759,6 +761,10 @@ const CreateBuy = async () => {
     buyModal.value = true;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
