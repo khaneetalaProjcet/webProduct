@@ -176,8 +176,8 @@ const backIdentity = () => {
   background-image: url(/src/assets/logo.svg);
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 30% auto; /* اندازه مناسب برای لوگو */
-  opacity: 0.1; /* مقدار opacity کمتر برای خوانایی بهتر */
-  z-index: 0; /* قرارگیری زیر محتوا */
+  background-size: 30% auto;
+  opacity: 0.1;
+  z-index: 0;
 }
 </style>
