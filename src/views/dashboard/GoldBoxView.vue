@@ -445,7 +445,7 @@
 import PriceService from "@/service/auth/price";
 import TradeService from "@/service/auth/trade";
 import TimerIcon from "@/assets/images/icons/TimerIcon.vue";
-import { onMounted, ref, watch, onUnmounted, computed } from "vue";
+import { onMounted, ref, watch, onUnmounted, computed, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
 import { numberToWords } from "@persian-tools/persian-tools";
@@ -537,14 +537,12 @@ const sellInfo = ref({
 });
 const paymentInfo = ref({
   invoiceId: "",
-  amount: "",
   isFromWallet: "",
   balance: 0,
 });
 
 const paymentSellInfo = ref({
   invoiceId: "",
-  amount: "",
   isFromWallet: "",
   balance: 0,
   goldWeight: 0,
@@ -629,11 +627,41 @@ const GetGoldPrice = async () => {
   }
 };
 
-const buyGoldpriceConvert = () => {
-  buyInfo.value.goldprice = buyInfo.value.goldprice.replace(/[^0-9]/g, "");
+const formatNumberWithCommas = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const removeCommas = (str) => {
+  return str.replace(/,/g, "");
+};
+
+const buyGoldpriceConvert = (e) => {
+  // buyInfo.value.goldprice = buyInfo.value.goldprice.replace(/[^0-9]/g, "");
+  // buyInfo.value.goldWeight = (
+  //   buyInfo.value.goldprice / goldPriceLive.value.buyPrice
+  // ).toFixed(3);
+
+  const cursorPosition = e.target.selectionStart;
+  const originalLength = buyInfo.value.goldprice.length;
+
+  const rawValue = removeCommas(buyInfo.value.goldprice).replace(/[^0-9]/g, "");
+  const numericValue = parseInt(rawValue || 0);
+
   buyInfo.value.goldWeight = (
-    buyInfo.value.goldprice / goldPriceLive.value.buyPrice
+    numericValue / goldPriceLive.value.buyPrice
   ).toFixed(3);
+
+  const formattedValue = formatNumberWithCommas(numericValue);
+  buyInfo.value.goldprice = formattedValue;
+
+  nextTick(() => {
+    const newLength = formattedValue.length;
+    const offset = newLength - originalLength;
+    e.target.setSelectionRange(
+      cursorPosition + offset,
+      cursorPosition + offset
+    );
+  });
 };
 
 const buyGoldweightConvert = () => {
@@ -651,13 +679,42 @@ const buyGoldweightConvert = () => {
   buyInfo.value.goldprice = parseInt(
     buyInfo.value.goldWeight * goldPriceLive.value.buyPrice
   );
+
+  const calculatedPrice = parseInt(buyInfo.value.goldWeight * goldPriceLive.value.buyPrice);
+  buyInfo.value.goldprice = formatNumberWithCommas(calculatedPrice);
 };
 
-const sellGoldpriceConvert = () => {
-  sellInfo.value.goldPrice = sellInfo.value.goldPrice.replace(/[^0-9]/g, "");
+
+const sellGoldpriceConvert = (e) => {
+  // sellInfo.value.goldPrice = sellInfo.value.goldPrice.replace(/[^0-9]/g, "");
+  // sellInfo.value.goldWeight = (
+  //   sellInfo.value.goldPrice / goldPriceLive.value.sellPrice
+  // ).toFixed(3);
+
+
+
+
+  const cursorPosition = e.target.selectionStart;
+  const originalLength = sellInfo.value.goldPrice.length;
+
+  const rawValue = removeCommas(sellInfo.value.goldPrice).replace(/[^0-9]/g, "");
+  const numericValue = parseInt(rawValue || 0);
+
   sellInfo.value.goldWeight = (
-    sellInfo.value.goldPrice / goldPriceLive.value.sellPrice
+    numericValue / goldPriceLive.value.sellPrice
   ).toFixed(3);
+
+  const formattedValue = formatNumberWithCommas(numericValue);
+  sellInfo.value.goldPrice = formattedValue;
+
+  nextTick(() => {
+    const newLength = formattedValue.length;
+    const offset = newLength - originalLength;
+    e.target.setSelectionRange(
+      cursorPosition + offset,
+      cursorPosition + offset
+    );
+  });
 };
 
 const sellGoldweightConvert = () => {
@@ -674,6 +731,10 @@ const sellGoldweightConvert = () => {
   sellInfo.value.goldPrice = parseInt(
     sellInfo.value.goldWeight * goldPriceLive.value.sellPrice
   );
+
+  
+  const calculatedPrice = parseInt(sellInfo.value.goldWeight * goldPriceLive.value.sellPrice);
+  sellInfo.value.goldPrice = formatNumberWithCommas(calculatedPrice);
 };
 
 const swapFields = () => {
@@ -692,7 +753,6 @@ const CreateBuy = async () => {
     payInfo.value.totalPrice = buyInfo.value.goldprice;
     payInfo.value.goldWeight = buyInfo.value.goldWeight;
     payInfo.value.goldPrice = goldPriceLive.value.buyPrice;
-    console.log(payInfo);
     const response = await TradeService.createInvoice(payInfo.value);
     paymentInfo.value.invoiceId = response.transactionId;
     paymentInfo.value.balance = response.wallet.balance;
@@ -717,7 +777,7 @@ const CompleteBuy = async (paymentMethod) => {
     } else {
       paymentInfo.value.isFromWallet = false;
     }
-    paymentInfo.value.amount = buyInfo.value.goldprice;
+    // paymentInfo.value.amount = buyInfo.value.goldprice;
     const response = await TradeService.complateTransaction(paymentInfo.value);
     if (response.isFromWallet == true) {
       buyModal.value = false;
@@ -769,7 +829,7 @@ const CreateSell = async () => {
 const CompleteSell = async () => {
   try {
     sellLoading.value = true;
-    paymentSellInfo.value.amount = sellInfo.value.goldPrice;
+    // paymentSellInfo.value.amount = sellInfo.value.goldPrice;
     paymentSellInfo.value.fee = 1;
     const response = await TradeService.complateSellTransaction(
       paymentSellInfo.value
