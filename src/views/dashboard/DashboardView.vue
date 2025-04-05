@@ -110,7 +110,7 @@
             indeterminate
             v-if="ChartLoading"
           ></v-progress-circular>
-          <p class="number" v-else>{{ wallet.monthlyProfit }} ٪</p>
+          <p class="number" direction="ltr" v-else>{{ wallet.monthlyProfit }} ٪</p>
         </div>
       </div>
     </v-col>
