@@ -7,26 +7,6 @@
             </div>
             <div class="content">
                 <p>مشکلی در پرداخت پیش آمده است!</p>
-                <!-- <div class="k-row">
-                    <p>عنوان:</p>
-                    <p>خرید از مجموعه خانه طلا</p>
-                </div>
-                <div class="k-row">
-                    <p>مبلغ:</p>
-                    <p>{{ paymentDetail.totalPrice }}</p>
-                </div>
-                <div class="k-row">
-                    <p>تاریخ/زمان:</p>
-                    <p>{{ paymentDetail.date }}</p>
-                </div>
-                <div class="k-row">
-                    <p>کارت مبدا:</p>
-                    <p>{{ paymentDetail.bank }}</p>
-                </div>
-                <div class="k-row border-0">
-                    <p>شناسه پرداخت:</p>
-                    <p>{{ paymentDetail.referenceID }}</p>
-                </div> -->
             </div>
             <div>
                 <v-btn color="#876824" class="mt-2" @click="backHome">بازگشت به صفحه اصلی {{ timer }}</v-btn>
@@ -39,22 +19,15 @@
 import { onMounted, ref } from 'vue';
 import closeIcon from '@/assets/images/icons/close.vue';
 import router from '@/router';
-import TradeService from '@/service/auth/trade';
-import { useRoute } from 'vue-router';
 
 const timer = ref('10');
-const route = useRoute();
 const paymentDetail = ref({});
-const errorMsg = ref('');
-const alertError = ref(false);
 
 
 
 const backHome = () => {
     router.replace('/')
 }
-
-
 
 
 onMounted(() => {
