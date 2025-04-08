@@ -130,7 +130,10 @@ const GetUser = async () => {
     user.value.bankName = response?.bankAccounts[0]?.name;
     return response;
   } catch (error) {
-    console.log(error);
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {

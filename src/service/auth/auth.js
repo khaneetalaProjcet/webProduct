@@ -27,7 +27,6 @@ const AuthService = {
     async VerifyIdentity(identity) {
         const body = JSON.stringify(identity);
         const response = await AuthTemplate.post("/identify", body);
-        console.log('api call')
         if (response.data.token) {
             const token = response.data.token;
             localStorage.setItem("token", token)

@@ -34,7 +34,6 @@ const TradeService = {
 
     async VerifyTransaction(zarinpal) {
         const body = JSON.stringify(zarinpal);
-        console.log(zarinpal)
         const response = await VerifyTemplate.post(`/VerifyTransaction`, body);
         return response.data;
     },

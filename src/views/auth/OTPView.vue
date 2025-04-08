@@ -106,7 +106,6 @@ const submitOTP = async () => {
 
 
 const resendCode = async () => {
-    console.log(canResend.value)
     if (canResend.value == true) {
         try {
             phoneNumber.value = JSON.parse(localStorage.getItem('phoneNumber'))

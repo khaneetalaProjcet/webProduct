@@ -407,6 +407,10 @@ const GetWallet = async () => {
     wallet.value.blocked = response.blocked;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -426,6 +430,10 @@ const GetGoldPrice = async () => {
     goldPriceLive.value.change = response.change;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -445,6 +453,10 @@ const deposit = async () => {
     window.location.href = paymentUrl.value;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -457,7 +469,6 @@ const deposit = async () => {
 const VerifyDeposit = async (zarinpal) => {
   try {
     const response = await TradeService.VerifyDepositWallet(zarinpal);
-    console.log(response);
     verifyDetail.value = response;
     return response;
   } catch (error) {
@@ -486,6 +497,10 @@ const withdraw = async () => {
     withdrawTransaction();
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -536,7 +551,10 @@ const depositTransaction = async () => {
     DepositeTransactionItems.value = response;
     return response;
   } catch (error) {
-    console.log(error);
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -557,7 +575,10 @@ const withdrawTransaction = async () => {
     WithdrawTransactionItems.value = response;
     return response;
   } catch (error) {
-    console.log(error);
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {

@@ -617,6 +617,10 @@ const GetGoldPrice = async () => {
     goldPriceLive.value.change = response.change;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -666,7 +670,6 @@ const buyGoldpriceConvert = (e) => {
 
 const buyGoldweightConvert = () => {
   buyInfo.value.goldWeight = buyInfo.value.goldWeight.replace(/[^0-9.]/g, "");
-  console.log(buyInfo.value.goldWeight);
   const parts = buyInfo.value.goldWeight.split(".");
   if (parts.length > 1) {
     buyInfo.value.goldWeight = parts[0] + "." + parts.slice(1).join("");
@@ -763,7 +766,7 @@ const CreateBuy = async () => {
   } catch (error) {
     if (error.response.status == 401) {
       localStorage.clear();
-      router.replace("/login");
+      router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
@@ -795,6 +798,10 @@ const CompleteBuy = async (paymentMethod) => {
     }
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -822,6 +829,10 @@ const CreateSell = async () => {
     sellModal.value = true;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -848,6 +859,10 @@ const CompleteSell = async () => {
     }, 5000);
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -874,6 +889,10 @@ const sellTransaction = async () => {
     SellTransactionItems.value = response;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -893,6 +912,10 @@ const buyTransaction = async () => {
     BuyTransactionItems.value = response;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
@@ -906,10 +929,13 @@ const buyTransaction = async () => {
 const VerifyTransaction = async (zarinpal) => {
   try {
     const response = await TradeService.VerifyTransaction(zarinpal);
-    console.log(response);
     verifyDetail.value = response;
     return response;
   } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
     alertError.value = true;
     setTimeout(() => {
