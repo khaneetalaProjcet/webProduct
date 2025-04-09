@@ -5,7 +5,6 @@
         <v-col cols="12">
           <div class="d-flex flex-column align-center">
             <h3 class="title">خرید و فروش طلا</h3>
-            <!-- <p class="subtitle">با خیال راحت در خانه طلا خرید و فروش کنید</p> -->
           </div>
         </v-col>
         <v-col cols="12">
@@ -651,11 +650,32 @@ const buyGoldpriceConvert = (e) => {
   const rawValue = removeCommas(buyInfo.value.goldprice).replace(/[^0-9]/g, "");
   const numericValue = parseInt(rawValue || 0);
 
+
+//////////////////////////////////////
+  // let first =  (
+  //   numericValue / goldPriceLive.value.buyPrice
+  // ).toFixed(4);
+
+  // let second =  (
+  //   numericValue / goldPriceLive.value.buyPrice
+  // ).toFixed(3);
+
+  // let main = first.split('')
+  // let main2 = `${main[0]}${main[1]}${main[2]}${main[3]}${main[4]}`
+  // console.log(main2)
+  // console.log(first , second)
+///////////////////////////////////////
+
   buyInfo.value.goldWeight = (
     numericValue / goldPriceLive.value.buyPrice
-  ).toFixed(3);
+  ).toFixed(4);
+
+  // buyInfo.value.goldWeight = main2;
+
+  // let newNum = +main2 * goldPriceLive.value.buyPrice
 
   const formattedValue = formatNumberWithCommas(numericValue);
+
   buyInfo.value.goldprice = formattedValue;
 
   nextTick(() => {
@@ -748,7 +768,7 @@ const swapFields = () => {
 
 const validateWeight = [
   (v) => !!v || "مقدار ورودی نمی‌تواند خالی باشد",
-  (v) => /^\d+(\.\d{1,3})?$/.test(v) || "فقط عدد مجاز است و حداکثر 3 رقم اعشار",
+  (v) => /^\d+(\.\d{1,3})?$/.test(v) || "فقط عدد مجاز است و حداکثر 4 رقم اعشار",
 ];
 
 const CreateBuy = async () => {
