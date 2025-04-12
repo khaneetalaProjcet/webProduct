@@ -7,6 +7,9 @@ const PriceTemplateK = axios.create({
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
     },
 })
 
