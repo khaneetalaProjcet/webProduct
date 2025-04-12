@@ -19,7 +19,12 @@
         <v-list>
           <v-list-item>
             <v-list-item-title>
-              <v-btn variant="text" class="logout-btn ma-0" @click="logout">
+              <v-btn
+                variant="text"
+                class="logout-btn ma-0"
+                @click="logout"
+                :loading="logoutLoading"
+              >
                 <logOut />
                 خروج از حساب
               </v-btn>
@@ -225,6 +230,7 @@ const errorMsg = ref("");
 const alertError = ref(false);
 const cartDialog = ref(false);
 const cartLoading = ref(false);
+const logoutLoading = ref(false);
 const cardNumber = ref("");
 const isValid = ref(false);
 const haveBank = ref(false);
@@ -290,9 +296,22 @@ const GetUser = async () => {
   }
 };
 
-const logout = () => {
-  localStorage.removeItem("token");
-  router.replace("/login");
+const logout = async () => {
+  try {
+    logoutLoading.value = true;
+    const response = await AuthService.LogOut()
+    localStorage.removeItem("token");
+    router.replace("/login");
+    return response;
+  } catch (error) {
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 10000);
+  } finally {
+    logoutLoading.value = false;
+  }
 };
 
 onMounted(() => {
