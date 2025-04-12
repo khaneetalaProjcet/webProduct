@@ -26,12 +26,13 @@
 // export default PriceService
 
 
-import VerifyTemplate from "./api";
+// import VerifyTemplate from "./api";
+import QueryTemplate from "./queryTemplate";
 
 
 const PriceService = {
     async GoldPrice() {
-        const response = await VerifyTemplate.get('/goldPrice');
+        const response = await QueryTemplate.get('/goldPrice');
         return response.data;
     }
 }

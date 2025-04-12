@@ -1,4 +1,5 @@
 import VerifyTemplate from "./api";
+import QueryTemplate from "./queryTemplate";
 
 
 const TradeService = {
@@ -16,7 +17,7 @@ const TradeService = {
 
     async GoldBoxBuyTransactions(filterTransactions) {
         const body = JSON.stringify(filterTransactions);
-        const response = await VerifyTemplate.post("/buytransactions", body);
+        const response = await QueryTemplate.post("/buytransactions", body);
         return response.data;
     },
 
@@ -28,7 +29,7 @@ const TradeService = {
 
     async CreateCart() {
         const body = JSON.stringify();
-        const response = await VerifyTemplate.post(`/createCart`);
+        const response = await QueryTemplate.post(`/createCart`);
         return response.data;
     },
 
@@ -75,7 +76,7 @@ const TradeService = {
 
     async WalletTransaction(filterTransactions) {
         const body = JSON.stringify(filterTransactions);
-        const response = await VerifyTemplate.post(`/WalletTransactions`, body);
+        const response = await QueryTemplate.post(`/WalletTransactions`, body);
         return response.data;
     }
 

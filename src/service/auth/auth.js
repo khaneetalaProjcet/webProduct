@@ -1,5 +1,6 @@
 import VerifyTemplate from "./api";
 import AuthTemplate from "./authApi";
+import QueryTemplate from "./queryTemplate";
 
 const AuthService = {
   async Login(phoneNumber) {
@@ -34,12 +35,12 @@ const AuthService = {
   },
 
   async Profile() {
-    const response = await VerifyTemplate.get("/profile");
+    const response = await QueryTemplate.get("/profile");
     return response.data;
   },
 
   async Wallet() {
-    const response = await VerifyTemplate.get("/wallet");
+    const response = await QueryTemplate.get("/wallet");
     return response.data;
   },
 
