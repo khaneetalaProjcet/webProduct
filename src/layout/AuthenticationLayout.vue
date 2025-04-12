@@ -7,7 +7,7 @@
                 </v-col>
                 <v-col md="6 d-none d-md-flex">
                      <div class="d-flex justify-center align-center">
-                        <img src="/src/assets/images/goldbar.png" alt="ورود به خانه طلا" class="login-image">
+                        <img src="/src/assets/images/login.png" alt="ورود به خانه طلا" class="login-image">
                      </div>
                 </v-col>
             </v-row>
