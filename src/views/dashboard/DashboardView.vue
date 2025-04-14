@@ -159,6 +159,7 @@ import {
   LineElement,
 } from "chart.js";
 import DashboardService from "@/service/auth/dashboard";
+import router from "@/router";
 
 ChartJS.register(
   Title,

@@ -95,6 +95,7 @@ import BankCartIcon from "@/assets/images/icons/bankCart.vue";
 import CartIcon from "@/assets/images/icons/CartIcon.vue";
 import { ref, onMounted } from "vue";
 import AuthService from "@/service/auth/auth";
+import router from "@/router";
 
 const alertError = ref(false);
 const errorMsg = ref("");
