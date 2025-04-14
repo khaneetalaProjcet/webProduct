@@ -72,7 +72,7 @@
               <p class="gold-price my-1" v-else>
                 معادل
                 {{
-                  formatNumber(wallet.goldWeight * goldPriceLive.buyPrice)
+                  formatNumber(+(wallet.goldWeight * goldPriceLive.buyPrice).toFixed())
                 }}تومان
               </p>
             </div>
