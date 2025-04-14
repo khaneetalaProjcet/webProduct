@@ -60,7 +60,7 @@
             indeterminate
             v-if="ChartLoading"
           ></v-progress-circular>
-          <p class="number" v-else>{{ formatNumber(wallet.walletPrice) }}</p>
+          <p class="number" v-else>{{ formatNumber(wallet.walletPrice) }} تومان</p>
         </div>
       </div>
     </v-col>

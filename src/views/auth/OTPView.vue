@@ -43,7 +43,7 @@
         <v-form ref="form" v-model="isValid" @submit.prevent="submitOTP" class="auth-form">
             <v-sheet color="surface">
 
-                <v-otp-input :length="4" v-model="otp" type="number" variant="outlined" class="otp-input"></v-otp-input>
+                <v-otp-input :length="4" v-model="otp" type="number" variant="outlined" class="otp-input" autocomplete="one-time-code"></v-otp-input>
 
             </v-sheet>
 

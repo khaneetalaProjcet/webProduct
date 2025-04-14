@@ -108,7 +108,7 @@
             </div>
             <div class="assets-price">
               <p class="ma-0">
-                موجودی کیف پول: {{ user.wallet.balance }} تومان
+                موجودی کیف پول: {{ formatNumber(user.wallet.balance) }} تومان
               </p>
             </div>
           </div>
@@ -299,7 +299,7 @@ const GetUser = async () => {
 const logout = async () => {
   try {
     logoutLoading.value = true;
-    const response = await AuthService.LogOut()
+    const response = await AuthService.LogOut();
     localStorage.removeItem("token");
     router.replace("/login");
     return response;
@@ -312,6 +312,10 @@ const logout = async () => {
   } finally {
     logoutLoading.value = false;
   }
+};
+
+const formatNumber = (num) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 onMounted(() => {
