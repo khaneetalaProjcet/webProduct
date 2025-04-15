@@ -3,76 +3,68 @@
     <v-col cols="12">
       <div class="profile-box">
         <v-row>
-          <v-col md="1" class="d-none d-md-flex"></v-col>
-          <v-col cols="12" md="5">
-            <div class="p-2">
-              <div class="image-box my-2 prof-box">
-                <UserIcon />
-                <p>بارگذاری عکس</p>
+          <v-col cols="12" md="6">
+            <div class="d-flex flex-column align-center image-box">
+              <p class="username my-2">
+                {{ user.firstName }} {{ user.lastName }}
+              </p>
+              <p class="level my-2">سطح کاربری : C</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6">
+            <div class="d-flex flex-column align-center prof-box">
+              <div class="d-flex mt-5">
+                <BankCartIcon />
+                <p class="green mx-2">کارت بانکی</p>
               </div>
-              <div class="my-4 w-100 d-flex justify-space-between prof-box">
-                <div class="d-flex flex-column">
-                  <div class="m-2 d-flex flex-column align-start my-3">
-                    <p class="k-title">کد ملی :</p>
-                    <p class="k-text">{{ user.nationalCode }}</p>
-                  </div>
-                  <div class="m-2 d-flex flex-column align-start my-3">
-                    <p class="k-title">تاریخ تولد :</p>
-                    <p class="k-text">{{ user.birthDate }}</p>
-                  </div>
-                  <div class="m-2 d-flex flex-column align-start my-3">
-                    <p class="k-title">نام پدر :</p>
-                    <p class="k-text">{{ user.fatherName }}</p>
+              <div class="bankcart-box">
+                <div class="d-flex justify-space-around">
+                  <p class="cart-text">{{ user.bankName }}</p>
+                  <div class="icon-box">
+                    <CartIcon />
                   </div>
                 </div>
-                <div class="d-flex flex-column">
-                  <div class="m-2 d-flex flex-column align-start my-3">
-                    <p class="k-title">محل تولد :</p>
-                    <p class="k-text">{{ user.officeName }}</p>
-                  </div>
-                  <div class="m-2 d-flex flex-column align-start my-3">
-                    <p class="k-title">شماره همراه :</p>
-                    <p class="k-text">{{ user.phoneNumber }}</p>
-                  </div>
-                  <div class="m-2 d-flex flex-column align-start my-3">
-                    <p class="k-title">جنسیت :</p>
-                    <p class="k-text">
-                      {{ user.gender == true ? "آقا" : "خانم" }}
-                    </p>
-                  </div>
+                <div class="d-flex flex-column align-center justify-center">
+                  <p class="cart-number">{{ user.cardNumber }}</p>
+                  <p class="cart-number">{{ user.shebaNumber }}</p>
                 </div>
               </div>
             </div>
           </v-col>
-          <v-col cols="12" md="5">
-            <div class="">
-              <div class="d-flex flex-column align-center prof-box">
-                <p class="username my-2">
-                  {{ user.firstName }} {{ user.lastName }}
-                </p>
-                <p class="level my-2">سطح کاربری : C</p>
-              </div>
-              <div class="d-flex flex-column align-center prof-box">
-                <div class="d-flex mt-5">
-                  <BankCartIcon />
-                  <p class="green mx-2">کارت بانکی</p>
+          <v-col cols="12">
+            <div class="my-4 w-100 d-flex justify-space-evenly prof-box">
+              <div class="d-flex flex-column">
+                <div class="m-2 d-flex flex-column align-start my-3">
+                  <p class="k-title">کد ملی :</p>
+                  <p class="k-text">{{ user.nationalCode }}</p>
                 </div>
-                <div class="bankcart-box">
-                  <div class="d-flex justify-space-around">
-                    <p class="cart-text">{{ user.bankName }}</p>
-                    <div class="icon-box">
-                      <CartIcon />
-                    </div>
-                  </div>
-                  <div class="d-flex flex-column align-center justify-center">
-                    <p class="cart-number">{{ user.cardNumber }}</p>
-                    <p class="cart-number">{{ user.shebaNumber }}</p>
-                  </div>
+                <div class="m-2 d-flex flex-column align-start my-3">
+                  <p class="k-title">تاریخ تولد :</p>
+                  <p class="k-text">{{ user.birthDate }}</p>
+                </div>
+                <div class="m-2 d-flex flex-column align-start my-3">
+                  <p class="k-title">نام پدر :</p>
+                  <p class="k-text">{{ user.fatherName }}</p>
+                </div>
+              </div>
+              <div class="d-flex flex-column">
+                <div class="m-2 d-flex flex-column align-start my-3">
+                  <p class="k-title">محل تولد :</p>
+                  <p class="k-text">{{ user.officeName }}</p>
+                </div>
+                <div class="m-2 d-flex flex-column align-start my-3">
+                  <p class="k-title">شماره همراه :</p>
+                  <p class="k-text">{{ user.phoneNumber }}</p>
+                </div>
+                <div class="m-2 d-flex flex-column align-start my-3">
+                  <p class="k-title">جنسیت :</p>
+                  <p class="k-text">
+                    {{ user.gender == true ? "آقا" : "خانم" }}
+                  </p>
                 </div>
               </div>
             </div>
           </v-col>
-          <v-col md="1" class="d-none d-md-flex"></v-col>
         </v-row>
       </div>
     </v-col>
