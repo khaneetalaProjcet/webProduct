@@ -60,7 +60,9 @@
             indeterminate
             v-if="ChartLoading"
           ></v-progress-circular>
-          <p class="number" v-else>{{ formatNumber(wallet.walletPrice) }} تومان</p>
+          <p class="number" v-else>
+            {{ formatNumber(wallet.walletPrice) }} تومان
+          </p>
         </div>
       </div>
     </v-col>
@@ -104,14 +106,18 @@
           <DiagramUpIcon class="icon" />
         </div>
         <div class="d-flex flex-column align-center">
-          <p class="title mx-3">سود ماهانه</p>
+          <p class="title mx-3">قیمت طلا</p>
           <v-progress-circular
             color="white"
             indeterminate
             v-if="ChartLoading"
           ></v-progress-circular>
-          <p class="number ltr" v-else>{{ wallet.monthlyProfit }} ٪</p>
+          <!-- <p class="number ltr" v-else>{{ wallet.monthlyProfit }} ٪</p> -->
+          <p class="number" v-else>
+            {{ formatNumber(goldPriceLive.buyPrice) }} تومان
+          </p>
         </div>
+        <span class="live-tag">لحظه ای</span>
       </div>
     </v-col>
     <!-- charts -->
@@ -160,6 +166,7 @@ import {
 } from "chart.js";
 import DashboardService from "@/service/auth/dashboard";
 import router from "@/router";
+import PriceService from "@/service/auth/price";
 
 ChartJS.register(
   Title,
@@ -176,11 +183,17 @@ ChartJS.register(
 const errorMsg = ref("");
 const ChartLoading = ref("");
 const alertError = ref(false);
+const GoldPriceLoading = ref(false);
 const wallet = ref({
   walletPrice: 0,
   walletWeight: 0,
   monthlyProfit: 0,
   totalBalance: 0,
+});
+const goldPriceLive = ref({
+  sellPrice: "",
+  buyPrice: "",
+  change: "",
 });
 
 let delayed;
@@ -402,8 +415,32 @@ const formatNumber = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+const GetGoldPrice = async () => {
+  try {
+    GoldPriceLoading.value = true;
+    const response = await PriceService.GoldPrice();
+    goldPriceLive.value.buyPrice = response.buyPrice;
+    goldPriceLive.value.sellPrice = response.sellPrice;
+    goldPriceLive.value.change = response.change;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 10000);
+  } finally {
+    GoldPriceLoading.value = false;
+  }
+};
+
 onMounted(() => {
   GetChartData();
+  GetGoldPrice();
 });
 </script>
 
@@ -527,6 +564,7 @@ onMounted(() => {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  position: relative;
 }
 
 .chart-card {
@@ -549,6 +587,15 @@ onMounted(() => {
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .k-card{
+    min-height: 8rem;
+  }
+  .k-card .number {
+    font-size: 12px;
+  }
+}
+
 .k-card .number {
   font-weight: 700;
   margin-top: 0.4rem;
@@ -562,5 +609,17 @@ onMounted(() => {
 
 .ltr {
   direction: ltr;
+}
+
+.live-tag {
+  background-color: rgba(147, 6, 6, 1);
+  color: #fff;
+  box-shadow: 0px 2px 4px 0px rgba(154, 154, 154, 0.62);
+  border-radius: 12px;
+  font-size: 10px;
+  padding: 3px 8px;
+  position: absolute;
+  top: -10px;
+  left: -10px;
 }
 </style>
