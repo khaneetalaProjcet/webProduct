@@ -788,7 +788,7 @@ onMounted(() => {
   sellTransaction();
   setInterval(() => {
     GetGoldPrice();
-  }, 30000);
+  }, 1000*60*2);
 
   const zarinpal = ref({
     authority: route.query.Authority,

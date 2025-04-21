@@ -333,7 +333,8 @@
 
     <v-dialog max-width="500" v-model="buyModal" class="trade-modal">
       <v-card class="trade-modal">
-        <div class="buyModal-content py-10">
+        <v-alert class="ma-4 text-center" color="error" text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد" variant="tonal"></v-alert>
+        <div class="buyModal-content py-5">
           <h3>فاکتور خرید</h3>
           <div class="wallet-badge my-2">
             <span class="pe-6">موجودی کیف پول</span>
@@ -359,7 +360,7 @@
             </div>
           </div>
         </div>
-        <div class="d-flex justify-space-around my-2">
+        <div class="d-flex justify-space-around mt-2 mb-7">
           <v-btn
             text="پرداخت مستقیم"
             class="pay-btn"
@@ -377,9 +378,10 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog max-width="500" v-model="sellModal">
-      <v-card>
-        <div class="buyModal-content py-10">
+    <v-dialog max-width="500" v-model="sellModal" class="trade-modal">
+      <v-card class="trade-modal">
+        <v-alert class="ma-4 text-center" color="error" text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد" variant="tonal"></v-alert>
+        <div class="buyModal-content py-5">
           <h3>فاکتور فروش</h3>
           <div class="wallet-badge my-2">
             <span class="pe-6">موجودی کیف پول</span>
@@ -405,7 +407,7 @@
             </div>
           </div>
         </div>
-        <div class="d-flex justify-space-around my-2">
+        <div class="d-flex justify-space-around mt-2 mb-7">
           <v-btn
             text="تایید فروش"
             class="pay-btn"
@@ -652,23 +654,22 @@ const buyGoldpriceConvert = (e) => {
 
 
 //////////////////////////////////////
-  // let first =  (
-  //   numericValue / goldPriceLive.value.buyPrice
-  // ).toFixed(4);
+  let first =  (
+    numericValue / goldPriceLive.value.buyPrice
+  ).toFixed(5);
+ 
 
   // let second =  (
   //   numericValue / goldPriceLive.value.buyPrice
   // ).toFixed(3);
 
-  // let main = first.split('')
-  // let main2 = `${main[0]}${main[1]}${main[2]}${main[3]}${main[4]}`
-  // console.log(main2)
+  let main = first.split('')
+  let main2 = `${main[0]}${main[1]}${main[2]}${main[3]}${main[4]}`
+  console.log(main2)
   // console.log(first , second)
 ///////////////////////////////////////
 
-  buyInfo.value.goldWeight = (
-    numericValue / goldPriceLive.value.buyPrice
-  ).toFixed(4);
+  buyInfo.value.goldWeight = main2
 
   // buyInfo.value.goldWeight = main2;
 
@@ -723,10 +724,19 @@ const sellGoldpriceConvert = (e) => {
     ""
   );
   const numericValue = parseInt(rawValue || 0);
-
-  sellInfo.value.goldWeight = (
-    numericValue / goldPriceLive.value.sellPrice
-  ).toFixed(3);
+  let first =  (
+    numericValue / goldPriceLive.value.buyPrice
+  ).toFixed(5);
+  console.log('ddd' , first)
+  
+  let secondFirst = first.split('')
+  let mainWeight = `${secondFirst[0]}${secondFirst[1]}${secondFirst[2]}${secondFirst[3]}${secondFirst[4]}`
+  console.log('ddd222' , mainWeight)
+  // console.log(mainWeight)
+  // sellInfo.value.goldWeight = (
+  //   numericValue / goldPriceLive.value.sellPrice
+  // ).toFixed(3);
+  sellInfo.value.goldWeight = mainWeight
 
   const formattedValue = formatNumberWithCommas(numericValue);
   sellInfo.value.goldPrice = formattedValue;

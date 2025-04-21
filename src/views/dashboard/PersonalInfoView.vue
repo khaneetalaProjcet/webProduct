@@ -29,6 +29,23 @@
                   <p class="cart-number">{{ user.shebaNumber }}</p>
                 </div>
               </div>
+              <div class="d-flex justify-center w-100 my-2">
+                <v-btn
+                  color="#00603a"
+                  size="small"
+                  class="mx-2 px-4"
+                  variant="text"
+                  @click="cartListDialog = true"
+                  >لیست کارت ها</v-btn
+                >
+                <v-btn
+                  color="#00603a"
+                  size="small"
+                  class="mx-2 px-4"
+                  variant="outlined"
+                  >افزودن کارت جدید</v-btn
+                >
+              </div>
             </div>
           </v-col>
           <v-col cols="12">
@@ -79,6 +96,89 @@
   >
     {{ errorMsg }}
   </v-alert>
+
+  <v-dialog
+    v-model="cartListDialog"
+    transition="dialog-bottom-transition"
+    width="auto"
+  >
+    <template v-slot:default="{ isActive }">
+      <v-card width="330px">
+        <v-toolbar title="لیست کارت های بانکی شما"></v-toolbar>
+
+        <div class="d-flex flex-column pa-5">
+          <div class="list-cart-box my-2">
+            <!-- image cart -->
+            <div class="d-flex justify-space-between align-center">
+              <div class="d-flex align-center">
+                <img
+                  src="/src/assets/images/bank/saman.svg"
+                  alt=""
+                  width="30"
+                  height="30"
+                />
+                <span class="name">سامان</span>
+              </div>
+              <div>
+                <v-btn
+                  class="pa-1"
+                  icon="mdi-delete-outline"
+                  variant="text"
+                  color="#FF0000"
+                  size="small"
+                ></v-btn>
+              </div>
+            </div>
+            <div class="d-flex justify-end pa-1">
+              <p class="number">6219861053804984</p>
+            </div>
+            <div class="d-flex justify-end pa-1">
+              <p class="number">IR320560083388802922191001</p>
+            </div>
+            <div class="d-flex justify-start">
+              <p class="number">علیرضا جوادزاده</p>
+            </div>
+          </div>
+          <div class="list-cart-box my-2">
+            <!-- image cart -->
+            <div class="d-flex justify-space-between align-center">
+              <div class="d-flex align-center">
+                <img
+                  src="/src/assets/images/bank/saman.svg"
+                  alt=""
+                  width="30"
+                  height="30"
+                />
+                <span class="name">سامان</span>
+              </div>
+              <div>
+                <v-btn
+                  class="pa-1"
+                  icon="mdi-delete-outline"
+                  variant="text"
+                  color="#FF0000"
+                  size="small"
+                ></v-btn>
+              </div>
+            </div>
+            <div class="d-flex justify-end pa-1">
+              <p class="number">6219861053804984</p>
+            </div>
+            <div class="d-flex justify-end pa-1">
+              <p class="number">IR320560083388802922191001</p>
+            </div>
+            <div class="d-flex justify-start">
+              <p class="number">علیرضا جوادزاده</p>
+            </div>
+          </div>
+        </div>
+
+        <v-card-actions class="justify-end">
+          <v-btn text="Close" @click="isActive.value = false"></v-btn>
+        </v-card-actions>
+      </v-card>
+    </template>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -91,6 +191,7 @@ import router from "@/router";
 
 const alertError = ref(false);
 const errorMsg = ref("");
+const cartListDialog = ref(false);
 
 const user = ref({
   firstName: "",
@@ -202,7 +303,7 @@ onMounted(() => {
 
 .bankcart-box {
   margin-top: 1rem;
-  background-color: #38785d;
+  background-color: #00603a;
   width: 270px;
   height: 120px;
   box-shadow: 4px 4px 20px 0px rgba(77, 179, 138, 0.4);
@@ -252,4 +353,23 @@ onMounted(() => {
     z-index: 1000;
   }
 }
+
+.list-cart-box {
+  border: 1px solid rgba(77, 179, 138, 0.3);
+  padding: 0.3rem;
+  width: 100%;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-cart-box .name {
+  font-size: 11px;
+  margin-right: 0.2rem;
+}
+
+.list-cart-box .number {
+  font-size: 14px;
+}
+
 </style>

@@ -106,140 +106,83 @@
 </template>
 
 <script setup>
-import router from '@/router';
-import { ref, onMounted, onUnmounted } from 'vue';
-import AuthService from '@/service/auth/auth';
-import editIcon from '@/assets/images/icons/editIcon.vue'
+import router from "@/router";
+import { ref, onMounted, onUnmounted } from "vue";
+import AuthService from "@/service/auth/auth";
+import editIcon from "@/assets/images/icons/editIcon.vue";
 
-const otp = ref('');
+const otp = ref("");
 const loading = ref(false);
 const isValid = ref(false);
-const errorMsg = ref('');
+const errorMsg = ref("");
 const alertError = ref(false);
 const timer = ref(120);
 const canResend = ref(false);
-const phoneNumber = ref('');
+const phoneNumber = ref("");
 let countdown = null;
 
-const test = () =>{
-    console.log('test')
-    if ("OTPCredential" in window) {
-      const ac = new AbortController();
-      console.log('test')
-      navigator.credentials
-        .get({
-          ...({ otp: { transport: ["sms"] } }),
-          signal: ac.signal,
-        })
-        .then((otp) => {
-          if (otp && otp.code) {
-            // formik.setFieldValue("otp", otp.code);
-            alert(otp.code)
-            // console.log(otp)
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-
-      return () => {
-        ac.abort();
-      };
-    }
-}
-
-// useEffect(() => {
-//     console.log(window?.OTPCredential)
-//     if ("OTPCredential" in window) {
-//       const ac = new AbortController();
-//       navigator.credentials
-//         .get({
-//           ...({ otp: { transport: ["sms"] } } as any),
-//           signal: ac.signal,
-//         })
-//         .then((otp: any) => {
-//           if (otp && otp.code) {
-//             formik.setFieldValue("otp", otp.code);
-//           }
-//         })
-//         .catch((err) => {
-//           console.error(err);
-//         });
-
-//       return () => {
-//         ac.abort();
-//       };
-//     }
-//   }, []);
-
-
 const submitOTP = async () => {
-    try {
-        loading.value = true;
-        const response = await AuthService.VerifyOTP(otp.value);
-        if (response.userVerificationStatus == "SUCCESS") {
-            router.replace('/');
-        } else {
-            router.replace('/Identity');
-        }
-        return response
-    } catch (error) {
-        errorMsg.value = error.response.data.msg || 'خطایی رخ داده است!';
-        alertError.value = true;
-        setTimeout(() => {
-            alertError.value = false;
-        }, 5000)
-    } finally {
-        loading.value = false;
+  try {
+    loading.value = true;
+    const response = await AuthService.VerifyOTP(otp.value);
+    if (response.userVerificationStatus == "SUCCESS") {
+      router.replace("/");
+    } else {
+      router.replace("/Identity");
     }
-}
-
-const handleOTPInput = () => {
-    if (otp.value.length === 4) {
-        submitOTP();
-    }
+    return response;
+  } catch (error) {
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    loading.value = false;
+  }
 };
 
+const handleOTPInput = () => {
+  if (otp.value.length === 4) {
+    submitOTP();
+  }
+};
 
 const resendCode = async () => {
-    if (canResend.value == true) {
-        try {
-            phoneNumber.value = JSON.parse(localStorage.getItem('phoneNumber'))
-            await AuthService.Login(phoneNumber.value);
-            startTimer();
-        } catch (error) {
-            errorMsg.value = error.response.data.msg || 'خطایی رخ داده است!';
-            alertError.value = true;
-            setTimeout(() => {
-                alertError.value = false;
-            }, 5000);
-        }
+  if (canResend.value == true) {
+    try {
+      phoneNumber.value = JSON.parse(localStorage.getItem("phoneNumber"));
+      await AuthService.Login(phoneNumber.value);
+      startTimer();
+    } catch (error) {
+      errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+      alertError.value = true;
+      setTimeout(() => {
+        alertError.value = false;
+      }, 5000);
     }
+  }
 };
 
 const startTimer = () => {
-    canResend.value = false;
-    timer.value = 120;
-    countdown = setInterval(() => {
-        if (timer.value > 0) {
-            timer.value--;
-        } else {
-            clearInterval(countdown);
-            canResend.value = true;
-        }
-    }, 1000);
+  canResend.value = false;
+  timer.value = 120;
+  countdown = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--;
+    } else {
+      clearInterval(countdown);
+      canResend.value = true;
+    }
+  }, 1000);
 };
 
-
-
-
 onMounted(() => {
-    startTimer();
-    test();
+  startTimer();
 });
 
 onUnmounted(() => {
-    clearInterval(countdown);
+  clearInterval(countdown);
 });
 </script>
 
