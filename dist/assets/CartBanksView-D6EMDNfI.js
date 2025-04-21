@@ -1,0 +1,1 @@
+import{_ as n,c as r,a as t,o as a}from"./index-C1YFTTSa.js";const o={};function s(c,e){return a(),r("div",null,e[0]||(e[0]=[t("h3",null,"این صفحه به زودی کامل خواهد شد ...",-1)]))}const _=n(o,[["render",s]]);export{_ as default};
