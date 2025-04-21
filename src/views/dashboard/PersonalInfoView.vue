@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mt-5">
+  <!-- <v-row class="mt-5">
     <v-col cols="12">
       <div class="profile-box">
         <v-row>
@@ -85,7 +85,157 @@
         </v-row>
       </div>
     </v-col>
+  </v-row> -->
+
+  <v-row class="mt-5">
+    <v-col cols="12">
+      <div class="profile-box">
+        <div class="d-flex flex-column align-center mb-6">
+          <UserIcon />
+          <h3 class="title">اطلاعات شخصی</h3>
+          <div class="profile-level">
+            <p class="mx-2">سطح کاربری:</p>
+            <p class="mx-2">C</p>
+          </div>
+          <div class="referral-code">
+            <p class="mx-2">کد معرف:</p>
+            <p class="mx-2">{{ user.Referral }}</p>
+            <v-btn
+              icon="mdi-content-copy"
+              variant="text"
+              size="x-small"
+              class="copy-btn"
+              @click="copyReferral"
+            ></v-btn>
+          </div>
+        </div>
+        <v-row>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">نام:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>{{ user.firstName }}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">نام خانوادگی:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>{{ user.lastName }}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">نام پدر:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>{{ user.fatherName }}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">جنسیت:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <div v-else>
+                <p class="ma-0" v-if="user.gender == true">آقا</p>
+                <p class="ma-0" v-else>خانم</p>
+              </div>
+              <!-- <p class="ma-0" v-else>{{ user.gender }}</p> -->
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">کد ملی:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>{{ user.nationalCode }}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">شهر تولد:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>{{ user.officeName }}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">تاریخ تولد:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>{{ user.birthDate }}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item">
+              <p class="ma-0">شماره موبایل:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>{{ user.phoneNumber }}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="4" class="my-1">
+            <div class="profile-item auth">
+              <p class="ma-0">وضعیت احراز:</p>
+              <v-progress-circular
+                v-if="userLoading == true"
+                color="#00603a"
+                :size="20"
+                width="1"
+                indeterminate
+              ></v-progress-circular>
+              <p class="ma-0" v-else>احراز شده</p>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+    </v-col>
   </v-row>
+
   <v-alert
     v-if="alertError"
     color="error"
@@ -96,7 +246,16 @@
   >
     {{ errorMsg }}
   </v-alert>
-
+  <v-alert
+    v-if="alertSuccess"
+    color="success"
+    border="bottom"
+    elevation="2"
+    class="k-alert alert-animatiton"
+    closable
+  >
+    {{ successMsg }}
+  </v-alert>
   <v-dialog
     v-model="cartListDialog"
     transition="dialog-bottom-transition"
@@ -192,6 +351,9 @@ import router from "@/router";
 const alertError = ref(false);
 const errorMsg = ref("");
 const cartListDialog = ref(false);
+const userLoading = ref(false);
+const alertSuccess = ref(false);
+const successMsg = ref("");
 
 const user = ref({
   firstName: "",
@@ -205,10 +367,12 @@ const user = ref({
   birthDate: "",
   shebaNumber: "",
   bankName: "نام بانک",
+  Referral: "",
 });
 
 const GetUser = async () => {
   try {
+    userLoading.value = true;
     const response = await AuthService.Profile();
     let x = response.birthDate.split("");
     user.value.birthDate = `${x[0]}${x[1]}${x[2]}${x[3]}/${x[4]}${x[5]}/${x[6]}${x[7]}`;
@@ -222,6 +386,7 @@ const GetUser = async () => {
     user.value.gender = response?.gender;
     user.value.shebaNumber = response?.bankAccounts[0]?.shebaNumber;
     user.value.bankName = response?.bankAccounts[0]?.name;
+    user.value.Referral = response?.Referral;
     return response;
   } catch (error) {
     if (error.response.status == 401) {
@@ -233,7 +398,19 @@ const GetUser = async () => {
     setTimeout(() => {
       alertError.value = false;
     }, 10000);
+  } finally {
+    userLoading.value = false;
   }
+};
+
+const copyReferral = () => {
+  navigator.clipboard.writeText(user.value.Referral).then(() => {
+    successMsg.value = "کد معرف شما کپی شد";
+    alertSuccess.value = true;
+    setTimeout(() => {
+      alertSuccess.value = false;
+    }, 5000);
+  });
 };
 
 onMounted(() => {
@@ -250,6 +427,8 @@ onMounted(() => {
   height: 100%;
   background-color: #fff;
   padding: 4rem 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .image-box {
@@ -334,7 +513,7 @@ onMounted(() => {
 .k-alert {
   position: fixed;
   top: 10px;
-  right: 15%;
+  right: 25%;
   font-size: 12px;
   padding: 2px !important;
   min-width: 5rem;
@@ -346,7 +525,7 @@ onMounted(() => {
   .k-alert {
     position: fixed;
     top: 10px;
-    right: 40%;
+    right: 50%;
     font-size: 12px;
     padding: 2px !important;
     min-width: 5rem;
@@ -371,5 +550,46 @@ onMounted(() => {
 .list-cart-box .number {
   font-size: 14px;
 }
+/* new version */
+.profile-box .title {
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(0, 96, 58, 1);
+  text-align: center;
+  margin-top: 0.5rem;
+}
 
+.profile-item {
+  background-color: rgba(0, 96, 58, 0.1);
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-item.auth {
+  color: #00603a;
+}
+
+.profile-level {
+  font-size: 22px;
+  margin: 0.8rem 0;
+  display: flex;
+  color: #38785d;
+}
+
+.referral-code {
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 96, 58, 0.1);
+  border-radius: 6px;
+  padding: 0.1rem;
+  color: #38785d;
+}
+
+.copy-btn {
+  padding: 0 !important;
+  height: 8px;
+}
 </style>
