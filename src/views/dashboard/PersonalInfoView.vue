@@ -87,7 +87,7 @@
     </v-col>
   </v-row> -->
 
-  <v-row class="mt-5">
+  <v-row class="mt-5 mb-4">
     <v-col cols="12">
       <div class="profile-box">
         <div class="d-flex flex-column align-center mb-6">

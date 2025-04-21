@@ -81,6 +81,10 @@
               <EditInfo class="dashboard-icon" />
               <span>اطلاعات شخصی</span>
             </RouterLink>
+            <RouterLink class="link" to="Carts">
+              <WalletIcon class="dashboard-icon" />
+              <span>کارت های بانکی</span>
+            </RouterLink>
           </div>
         </div>
       </v-col>
@@ -220,6 +224,7 @@ import logOut from "@/assets/images/icons/logoutIcon.vue";
 import User from "@/assets/images/icons/userIcon.vue";
 import CartIcon from "@/assets/images/icons/CartIcon.vue";
 import InfoIcon from "@/assets/images/icons/InfoIcon.vue";
+import WalletIcon from "@/assets/images/icons/bankCart.vue";
 import { ref, onMounted } from "vue";
 import router from "@/router";
 import AuthService from "@/service/auth/auth";
@@ -396,6 +401,8 @@ onMounted(() => {
   filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
     hue-rotate(63deg) brightness(102%) contrast(100%);
   margin: 0 5px;
+  width: 20px;
+  height: 20px;
 }
 
 .profile-text {

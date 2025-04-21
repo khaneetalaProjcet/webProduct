@@ -30,6 +30,12 @@ export default [
         meta: { layout: "DashboardLayout", transition: 'fade', requiresAuth: true },
     },
     {
+        path: '/Carts',
+        name: 'Carts',
+        component: () => import('../views/dashboard/CartBanksView.vue'),
+        meta: { layout: "DashboardLayout", transition: 'fade', requiresAuth: true },
+    },
+    {
         path: '/GoldBoxNewView',
         name: 'GoldBoxNewView',
         component: () => import('../views/dashboard/GoldBoxNewView.vue'),
