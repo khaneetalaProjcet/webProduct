@@ -533,7 +533,7 @@ onMounted(() => {
   }
 }
 
-.list-cart-box {
+/* .list-cart-box {
   border: 1px solid rgba(77, 179, 138, 0.3);
   padding: 0.3rem;
   width: 100%;
@@ -549,7 +549,7 @@ onMounted(() => {
 
 .list-cart-box .number {
   font-size: 14px;
-}
+} */
 /* new version */
 .profile-box .title {
   font-size: 32px;

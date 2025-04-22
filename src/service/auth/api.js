@@ -1,3 +1,4 @@
+import router from "@/router";
 import axios from "axios";
 
 const VerifyTemplate = axios.create({

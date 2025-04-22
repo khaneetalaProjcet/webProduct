@@ -52,6 +52,11 @@ const AuthService = {
     return response.data;
   },
 
+  async GetCarts() {
+    const response = await QueryTemplate.get("/carts/all");
+    return response.data;
+  },
+
   async LogOut() {
     const response = await VerifyTemplate.post("/logout");
     return response.data;
