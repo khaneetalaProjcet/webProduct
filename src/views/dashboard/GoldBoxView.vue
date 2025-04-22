@@ -360,6 +360,19 @@
             </div>
           </div>
         </div>
+        <div class="my-4">
+          <!-- <v-select
+            v-model="selectedDate"
+            label="روز"
+            :items="persianDates"
+            variant="outlined"
+            item-title="name"
+            item-value="value"
+            @update:model-value="onDateSelected"
+            class="first-select"
+            :rules="[(v) => !!v || 'روز الزامی است']"
+          ></v-select> -->
+        </div>
         <div class="d-flex justify-space-around mt-2 mb-7">
           <v-btn
             text="پرداخت مستقیم"
@@ -462,7 +475,7 @@ const errorMsg = ref("");
 const successMsg = ref("");
 const alertError = ref(false);
 const alertSuccess = ref(false);
-const buyModal = ref(false);
+const buyModal = ref(true);
 const sellModal = ref(false);
 const isSwapped = ref(false);
 const historyTab = ref(null);

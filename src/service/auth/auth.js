@@ -52,6 +52,11 @@ const AuthService = {
     return response.data;
   },
 
+  async DeleteCart(id) {
+    const response = await VerifyTemplate.post(`/carts/remove/${id}`);
+    return response.data;
+  },
+
   async GetCarts() {
     const response = await QueryTemplate.get("/carts/all");
     return response.data;

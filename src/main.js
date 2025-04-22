@@ -11,6 +11,7 @@ import '@mdi/font/css/materialdesignicons.css';
 import { fa } from 'vuetify/locale';
 import VuePersianDatetimePicker from 'vue3-persian-datetime-picker';
 import VueApexCharts from 'vue3-apexcharts'
+import "iranianbanklogos/dist/ibl.css";
 
 
 

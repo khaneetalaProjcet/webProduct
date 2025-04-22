@@ -90,7 +90,10 @@
   <v-row class="mt-5 mb-4">
     <v-col cols="12">
       <div class="profile-box">
-        <div class="d-flex flex-column align-center mb-6">
+        <div class="d-flex justify-end d-md-none">
+          <v-btn variant="flat" color="#00603a" class="py-1 px-5" to="Carts">کارت های بانکی</v-btn>
+        </div>
+        <div class="d-flex flex-column align-center mb-6 pt-6">
           <UserIcon />
           <h3 class="title">اطلاعات شخصی</h3>
           <div class="profile-level">
@@ -256,7 +259,7 @@
   >
     {{ successMsg }}
   </v-alert>
-  <v-dialog
+  <!-- <v-dialog
     v-model="cartListDialog"
     transition="dialog-bottom-transition"
     width="auto"
@@ -267,7 +270,6 @@
 
         <div class="d-flex flex-column pa-5">
           <div class="list-cart-box my-2">
-            <!-- image cart -->
             <div class="d-flex justify-space-between align-center">
               <div class="d-flex align-center">
                 <img
@@ -299,7 +301,6 @@
             </div>
           </div>
           <div class="list-cart-box my-2">
-            <!-- image cart -->
             <div class="d-flex justify-space-between align-center">
               <div class="d-flex align-center">
                 <img
@@ -337,7 +338,7 @@
         </v-card-actions>
       </v-card>
     </template>
-  </v-dialog>
+  </v-dialog> -->
 </template>
 
 <script setup>
@@ -426,7 +427,10 @@ onMounted(() => {
   border-radius: 16px;
   height: 100%;
   background-color: #fff;
-  padding: 4rem 1rem;
+  padding-bottom: 4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
   display: flex;
   flex-direction: column;
 }
@@ -533,23 +537,6 @@ onMounted(() => {
   }
 }
 
-/* .list-cart-box {
-  border: 1px solid rgba(77, 179, 138, 0.3);
-  padding: 0.3rem;
-  width: 100%;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-}
-
-.list-cart-box .name {
-  font-size: 11px;
-  margin-right: 0.2rem;
-}
-
-.list-cart-box .number {
-  font-size: 14px;
-} */
 /* new version */
 .profile-box .title {
   font-size: 32px;
