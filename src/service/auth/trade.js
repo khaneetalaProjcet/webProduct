@@ -51,9 +51,10 @@ const TradeService = {
         return response.data;
     },
 
-    async DepositWallet(depositDetail) {
+    async DepositWallet(depositDetail , cartId) {
         const body = JSON.stringify({
-            "amount": depositDetail
+            "amount": depositDetail,
+            "cartId": cartId
         });
         const response = await VerifyTemplate.post("/deposit", body);
         return response.data;

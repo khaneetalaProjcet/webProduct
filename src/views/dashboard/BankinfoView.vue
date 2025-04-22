@@ -72,7 +72,9 @@
               <p class="gold-price my-1" v-else>
                 معادل
                 {{
-                  formatNumber(+(wallet.goldWeight * goldPriceLive.buyPrice).toFixed())
+                  formatNumber(
+                    +(wallet.goldWeight * goldPriceLive.buyPrice).toFixed()
+                  )
                 }}تومان
               </p>
             </div>
@@ -252,6 +254,18 @@
           <div v-if="priceAmount">
             <p class="amount-word">{{ DepositeAmountInWords }}</p>
           </div>
+          <v-select
+            v-model="cartId"
+            :loading="cartsLoading"
+            label="انتخاب کارت"
+            :items="carts"
+            density="compact"
+            variant="outlined"
+            item-title="cardNumber"
+            item-value="id" 
+            class="mt-3"
+            :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
+          ></v-select>
           <div class="title my-2">
             <InfoIcon />
             <p>حداقل مبلغ شارژ باید 100,000 تومان باشد</p>
@@ -263,7 +277,7 @@
             color="#9D7E3B"
             variant="flat"
             class="submit-cart-btn"
-            :disabled="!isValidcharge"
+            :disabled="!isValidcharge || !cartId"
             :loading="depositLoading"
           ></v-btn>
         </v-form>
@@ -322,11 +336,14 @@ const alertError = ref(false);
 const alertSuccess = ref(false);
 const historyTab = ref(null);
 const TransactionLoading = ref(false);
+const cartsLoading = ref(false);
+const cartId = ref(null);
 const DepositeTransactionItems = ref();
 const WithdrawTransactionItems = ref();
 const walletLoading = ref(false);
 const GoldPriceLoading = ref(false);
 const withdrawLoading = ref(false);
+const carts = ref([]);
 const depositDialog = ref(false);
 const withdrawDialog = ref(false);
 const priceAmount = ref("");
@@ -447,7 +464,7 @@ const GetGoldPrice = async () => {
 const deposit = async () => {
   try {
     const response = await TradeService.DepositWallet(
-      priceAmount.value.replaceAll(",", "")
+      priceAmount.value.replaceAll(",", "") , cartId.value
     );
     paymentUrl.value = response.url;
     window.location.href = paymentUrl.value;
@@ -589,6 +606,27 @@ const withdrawTransaction = async () => {
   }
 };
 
+const getCarts = async () => {
+  try {
+    cartsLoading.value = true;
+    const response = await AuthService.GetCarts();
+    carts.value = response.data.bankAccounts;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 10000);
+  } finally {
+    cartsLoading.value = false;
+  }
+};
+
 const filterChange = (filterValue) => {
   filterTransaction.value.status = filterValue.value;
   depositTransaction();
@@ -639,6 +677,7 @@ onMounted(() => {
   GetGoldPrice();
   depositTransaction();
   withdrawTransaction();
+  getCarts();
 
   const zarinpal = ref({
     authority: route.query.Authority,
