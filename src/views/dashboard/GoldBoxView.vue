@@ -333,7 +333,12 @@
 
     <v-dialog max-width="500" v-model="buyModal" class="trade-modal">
       <v-card class="trade-modal">
-        <v-alert class="ma-4 text-center" color="error" text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد" variant="tonal"></v-alert>
+        <v-alert
+          class="ma-4 text-center"
+          color="error"
+          text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
+          variant="tonal"
+        ></v-alert>
         <div class="buyModal-content py-5">
           <h3>فاکتور خرید</h3>
           <div class="wallet-badge my-2">
@@ -361,23 +366,23 @@
           </div>
         </div>
         <div class="my-4">
-          <!-- <v-select
-            v-model="selectedDate"
-            label="روز"
-            :items="persianDates"
+          <v-select
+            v-model="paymentInfo.cartId"
+            :loading="cartsLoading"
+            label="انتخاب کارت"
+            :items="carts"
             variant="outlined"
-            item-title="name"
-            item-value="value"
-            @update:model-value="onDateSelected"
-            class="first-select"
-            :rules="[(v) => !!v || 'روز الزامی است']"
-          ></v-select> -->
+            item-title="cardNumber"
+            item-value="id"
+            :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
+          ></v-select>
         </div>
         <div class="d-flex justify-space-around mt-2 mb-7">
           <v-btn
             text="پرداخت مستقیم"
             class="pay-btn"
             color="#9D7E3B"
+            :disabled="!paymentInfo.cartId "
             @click="CompleteBuy('direct')"
           ></v-btn>
           <v-btn
@@ -393,7 +398,12 @@
 
     <v-dialog max-width="500" v-model="sellModal" class="trade-modal">
       <v-card class="trade-modal">
-        <v-alert class="ma-4 text-center" color="error" text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد" variant="tonal"></v-alert>
+        <v-alert
+          class="ma-4 text-center"
+          color="error"
+          text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
+          variant="tonal"
+        ></v-alert>
         <div class="buyModal-content py-5">
           <h3>فاکتور فروش</h3>
           <div class="wallet-badge my-2">
@@ -463,6 +473,7 @@ import { onMounted, ref, watch, onUnmounted, computed, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
 import { numberToWords } from "@persian-tools/persian-tools";
+import AuthService from "@/service/auth/auth";
 
 const route = useRoute();
 
@@ -471,14 +482,16 @@ const tab = ref(null);
 const loading = ref(false);
 const sellLoading = ref(false);
 const GoldPriceLoading = ref(false);
+const cartsLoading = ref(false);
 const errorMsg = ref("");
 const successMsg = ref("");
 const alertError = ref(false);
 const alertSuccess = ref(false);
-const buyModal = ref(true);
+const buyModal = ref(false);
 const sellModal = ref(false);
 const isSwapped = ref(false);
 const historyTab = ref(null);
+const carts = ref([]);
 const goldPriceLive = ref({
   sellPrice: "",
   buyPrice: "",
@@ -553,6 +566,7 @@ const paymentInfo = ref({
   invoiceId: "",
   isFromWallet: "",
   balance: 0,
+  cartId: null,
 });
 
 const paymentSellInfo = ref({
@@ -645,6 +659,27 @@ const GetGoldPrice = async () => {
   }
 };
 
+const getCarts = async () => {
+  try {
+    cartsLoading.value = true;
+    const response = await AuthService.GetCarts();
+    carts.value = response.data.bankAccounts;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 10000);
+  } finally {
+    cartsLoading.value = false;
+  }
+};
+
 const formatNumberWithCommas = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
@@ -665,24 +700,20 @@ const buyGoldpriceConvert = (e) => {
   const rawValue = removeCommas(buyInfo.value.goldprice).replace(/[^0-9]/g, "");
   const numericValue = parseInt(rawValue || 0);
 
-
-//////////////////////////////////////
-  let first =  (
-    numericValue / goldPriceLive.value.buyPrice
-  ).toFixed(5);
- 
+  //////////////////////////////////////
+  let first = (numericValue / goldPriceLive.value.buyPrice).toFixed(5);
 
   // let second =  (
   //   numericValue / goldPriceLive.value.buyPrice
   // ).toFixed(3);
 
-  let main = first.split('')
-  let main2 = `${main[0]}${main[1]}${main[2]}${main[3]}${main[4]}`
-  console.log(main2)
+  let main = first.split("");
+  let main2 = `${main[0]}${main[1]}${main[2]}${main[3]}${main[4]}`;
+  console.log(main2);
   // console.log(first , second)
-///////////////////////////////////////
+  ///////////////////////////////////////
 
-  buyInfo.value.goldWeight = main2
+  buyInfo.value.goldWeight = main2;
 
   // buyInfo.value.goldWeight = main2;
 
@@ -737,19 +768,17 @@ const sellGoldpriceConvert = (e) => {
     ""
   );
   const numericValue = parseInt(rawValue || 0);
-  let first =  (
-    numericValue / goldPriceLive.value.buyPrice
-  ).toFixed(5);
-  console.log('ddd' , first)
-  
-  let secondFirst = first.split('')
-  let mainWeight = `${secondFirst[0]}${secondFirst[1]}${secondFirst[2]}${secondFirst[3]}${secondFirst[4]}`
-  console.log('ddd222' , mainWeight)
+  let first = (numericValue / goldPriceLive.value.buyPrice).toFixed(5);
+  console.log("ddd", first);
+
+  let secondFirst = first.split("");
+  let mainWeight = `${secondFirst[0]}${secondFirst[1]}${secondFirst[2]}${secondFirst[3]}${secondFirst[4]}`;
+  console.log("ddd222", mainWeight);
   // console.log(mainWeight)
   // sellInfo.value.goldWeight = (
   //   numericValue / goldPriceLive.value.sellPrice
   // ).toFixed(3);
-  sellInfo.value.goldWeight = mainWeight
+  sellInfo.value.goldWeight = mainWeight;
 
   const formattedValue = formatNumberWithCommas(numericValue);
   sellInfo.value.goldPrice = formattedValue;
@@ -991,6 +1020,7 @@ onMounted(() => {
   GetGoldPrice();
   buyTransaction();
   sellTransaction();
+  getCarts();
   setInterval(() => {
     GetGoldPrice();
   }, 30000);
@@ -1253,6 +1283,7 @@ onUnmounted(() => {
 
 .trade-modal {
   border-radius: 10px !important;
+  padding: 2rem;
 }
 
 .price-in-word {
