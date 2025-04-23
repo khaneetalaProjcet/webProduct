@@ -375,14 +375,15 @@
             item-title="cardNumber"
             item-value="id"
             :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
-          ></v-select>
+          >
+          </v-select>
         </div>
         <div class="d-flex justify-space-around mt-2 mb-7">
           <v-btn
             text="پرداخت مستقیم"
             class="pay-btn"
             color="#9D7E3B"
-            :disabled="!paymentInfo.cartId "
+            :disabled="!paymentInfo.cartId"
             @click="CompleteBuy('direct')"
           ></v-btn>
           <v-btn

@@ -1,17 +1,18 @@
 import VerifyTemplate from "./api";
 import QueryTemplate from "./queryTemplate";
+import TradeTemplate from "./tradeApi";
 
 
 const TradeService = {
     async createInvoice(buyInfo) {
         const body = JSON.stringify(buyInfo);
-        const response = await VerifyTemplate.post("/createTransaction", body);
+        const response = await TradeTemplate.post("/createTransaction", body);
         return response.data;
     },
 
     async complateTransaction(paymentInfo) {
         const body = JSON.stringify(paymentInfo);
-        const response = await VerifyTemplate.post("/completeBuy", body);
+        const response = await TradeTemplate.post("/completeBuy", body);
         return response.data;
     },
 
@@ -35,19 +36,19 @@ const TradeService = {
 
     async VerifyTransaction(zarinpal) {
         const body = JSON.stringify(zarinpal);
-        const response = await VerifyTemplate.post(`/VerifyTransaction`, body);
+        const response = await TradeTemplate.post(`/VerifyTransaction`, body);
         return response.data;
     },
 
     async createSellInvoice(sellInfo) {
         const body = JSON.stringify(sellInfo);
-        const response = await VerifyTemplate.post("/createTransaction", body);
+        const response = await TradeTemplate.post("/createTransaction", body);
         return response.data;
     },
 
     async complateSellTransaction(SellPaymentInfo) {
         const body = JSON.stringify(SellPaymentInfo);
-        const response = await VerifyTemplate.post("/completeSell", body);
+        const response = await TradeTemplate.post("/completeSell", body);
         return response.data;
     },
 
@@ -56,14 +57,14 @@ const TradeService = {
             "amount": depositDetail,
             "cartId": cartId
         });
-        const response = await VerifyTemplate.post("/deposit", body);
+        const response = await TradeTemplate.post("/deposit", body);
         return response.data;
     },
 
 
     async VerifyDepositWallet(zarinpal) {
         const body = JSON.stringify(zarinpal);
-        const response = await VerifyTemplate.post(`/VerifyDeposit`, body);
+        const response = await TradeTemplate.post(`/VerifyDeposit`, body);
         return response.data;
     },
 
@@ -71,7 +72,7 @@ const TradeService = {
         const body = JSON.stringify({
             "amount": withdrawDetail
         });
-        const response = await VerifyTemplate.post("/withdraw", body);
+        const response = await TradeTemplate.post("/withdraw", body);
         return response.data;
     },
 

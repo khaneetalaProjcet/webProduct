@@ -1,9 +1,9 @@
 import router from "@/router";
 import axios from "axios";
 
-const AuthTemplate = axios.create({
+const TradeTemplate = axios.create({
   // baseURL: "https://khaneetala.ir/api",
-  baseURL: "https://gateway.khanetala.ir/v1/main",
+  baseURL: "https://gateway.khanetala.ir/v1/trade",
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",
@@ -14,15 +14,13 @@ const AuthTemplate = axios.create({
 });
 
 // before request
-AuthTemplate.interceptors.request.use(
+TradeTemplate.interceptors.request.use(
   (config) => {
-    const currentUrl = window.location.href;
-    if (currentUrl.includes('https://khanetala.ir/login')) {
-      window.location.href = 'https://app.khanetala.ir/login';
-    }
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      router.replace("/login");
     }
     return config;
   },
@@ -32,7 +30,7 @@ AuthTemplate.interceptors.request.use(
 );
 
 // before response
-AuthTemplate.interceptors.response.use(
+TradeTemplate.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -46,4 +44,4 @@ AuthTemplate.interceptors.response.use(
   }
 );
 
-export default AuthTemplate;
+export default TradeTemplate;
