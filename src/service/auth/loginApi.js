@@ -16,8 +16,8 @@ const LoginTemplate = axios.create({
 // before request
 LoginTemplate.interceptors.request.use(
   (config) => {
-    if (window.location.href =  'https://khanetala.ir/login') {
-      window.location.href = 'https://app.khanetala.ir/login';
+    if (window.location.href =  'https://khanetala.ir/Login') {
+      window.location.href = 'https://app.khanetala.ir/Login';
     }
     const token = localStorage.getItem("token");
     if (token) {
