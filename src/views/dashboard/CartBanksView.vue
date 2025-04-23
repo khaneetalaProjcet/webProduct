@@ -60,44 +60,58 @@
           >
             <!-- icon cart -->
             <div class="d-flex justify-space-between align-center">
-              <div class="d-flex align-center">
+              <!-- <div class="d-flex align-center">
                 <span>{{ item.name }}</span>
-              </div>
-              <!-- <div class="d-flex align-center" v-if="item.name == 'SAMAN'">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == tejarat">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == SAMAN">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == SAMAN">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == SAMAN">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == SAMAN">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == SAMAN">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == SAMAN">
-                <i class="ibl64 ibl-sb"></i>
-              </div>
-
-              <div class="d-flex align-center" v-else-if="item.name == SAMAN">
-                <i class="ibl64 ibl-sb"></i>
               </div> -->
+              <div class="d-flex align-center">
+                <i class="ibl64 ibl-sb" v-if="item.name == 'SAMAN'"></i>
+
+                <i class="ibl64 ibl-bsi" v-else-if="item.name == 'SADERAT'"></i>
+
+                <i class="ibl64 ibl-sina" v-else-if="item.name =='SINA'"></i>
+
+                <i class="ibl64 ibl-maskan" v-else-if="item.name == 'MASKAN'"></i>
+
+                <i class="ibl64 ibl-tejarat" v-else-if="item.name == 'TEJARAT'"></i>
+
+                <i class="ibl64 ibl-shahr" v-else-if="item.name == 'SHAHR'"></i>
+
+                <i class="ibl64 ibl-en" v-else-if="item.name == 'EGHTESAD_NOVIN'"></i>
+
+                <i class="ibl64 ibl-post" v-else-if="item.name == 'POST'"></i>
+
+                <i class="ibl64 ibl-rb" v-else-if="item.name == 'REFAH'"></i>
+
+                <i class="ibl64 ibl-miran" v-else-if="item.name == 'MEHR_IRAN'"></i>
+
+                <i class="ibl64 ibl-bki" v-else-if="item.name == 'KESHAVARZI'"></i>
+
+                <i class="ibl64 ibl-iz" v-else-if="item.name == 'IRANZAMIN'"></i>
+
+                <i class="ibl64 ibl-sepah" v-else-if="item.name == 'SEPAH'"></i>
+
+                <i class="ibl64 ibl-ba" v-else-if="item.name == 'AYANDEH'"></i>
+
+                <i class="ibl64 ibl-resalat" v-else-if="item.name == 'RESALAT'"></i>
+
+                <i class="ibl64 ibl-mellat" v-else-if="item.name == 'MELLAT'"></i>
+
+                <i class="ibl64 ibl-bpi" v-else-if="item.name == 'PASARGAD'"></i>
+
+                <i class="ibl64 ibl-bmi" v-else-if="item.name == 'MELLI'"></i>
+                <i class="ibl64 ibl-parsian" v-else-if="item.name == 'PARSIAN'"></i>
+                <i class="ibl64 ibl-tt" v-else-if="item.name == 'TOSE_TAAVON'"></i>
+                <i class="ibl64 ibl-ghbi" v-else-if="item.name == 'GHAVAMIN'"></i>
+                <i class="ibl64 ibl-ansar" v-else-if="item.name == 'ANSAR'"></i>
+                <i class="ibl64 ibl-tourism" v-else-if="item.name == 'GARDESHGARI'"></i>
+                <i class="ibl64 ibl-kar" v-else-if="item.name == 'KARAFARIN'"></i>
+                <i class="ibl64 ibl-hi" v-else-if="item.name == 'HEKMAT'"></i>
+                <i class="ibl64 ibl-day" v-else-if="item.name == 'DAY'"></i>
+                <i class="ibl64 ibl-sarmayeh" v-else-if="item.name == 'SARMAYE'"></i>
+                <i class="ibl64 ibl-melal" v-else-if="item.name == 'MELAL'"></i>
+                <i class="ibl64 ibl-me" v-else-if="item.name == 'KHAVAREMIANE'"></i>
+                <span v-else>{{ item.name }}</span>
+              </div>
 
               <div>
                 <v-btn
