@@ -1,5 +1,6 @@
 import VerifyTemplate from "./api";
 import AuthTemplate from "./authApi";
+import LoginTemplate from "./loginApi";
 import QueryTemplate from "./queryTemplate";
 
 const AuthService = {
@@ -9,7 +10,7 @@ const AuthService = {
     });
     localStorage.setItem("phoneNumber", JSON.stringify(phoneNumber));
     localStorage.setItem("loginTime", JSON.stringify(Date.now()));
-    const response = await AuthTemplate.post("/otp", body);
+    const response = await LoginTemplate.post("/otp", body);
     return response.data;
   },
 

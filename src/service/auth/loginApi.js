@@ -1,7 +1,7 @@
 import router from "@/router";
 import axios from "axios";
 
-const AuthTemplate = axios.create({
+const LoginTemplate = axios.create({
   // baseURL: "https://khaneetala.ir/api",
   baseURL: "https://gateway.khanetala.ir/v1/main",
   headers: {
@@ -14,8 +14,11 @@ const AuthTemplate = axios.create({
 });
 
 // before request
-AuthTemplate.interceptors.request.use(
+LoginTemplate.interceptors.request.use(
   (config) => {
+    if (window.location.href =  'https://khanetala.ir/login') {
+      window.location.href = 'https://app.khanetala.ir/login';
+    }
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -28,7 +31,7 @@ AuthTemplate.interceptors.request.use(
 );
 
 // before response
-AuthTemplate.interceptors.response.use(
+LoginTemplate.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -42,4 +45,4 @@ AuthTemplate.interceptors.response.use(
   }
 );
 
-export default AuthTemplate;
+export default LoginTemplate;
