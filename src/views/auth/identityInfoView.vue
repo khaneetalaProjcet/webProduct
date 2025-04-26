@@ -77,7 +77,7 @@
 
             <v-btn type="submit" class="my-6" height="40" text="تایید و ورود" variant="elevated" width="100%"
                 color="#B0863B" :loading="loading"></v-btn>
-            <p class="site-url">آدرس رسمی سامانه<span class="k-primary"> www.khaneetala.ir </span>میباشد</p>
+            <p class="site-url">آدرس رسمی سامانه<span class="k-primary"> www.khanetala.ir </span>میباشد</p>
         </v-form>
     </v-card>
 
