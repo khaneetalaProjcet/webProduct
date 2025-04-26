@@ -3,7 +3,7 @@ import axios from "axios";
 
 const AuthTemplate = axios.create({
   // baseURL: "https://khaneetala.ir/api",
-  baseURL: "https://gateway.khanetala.ir/v1/main",
+  baseURL: "https://gateway.khaneetala.ir/v1/main",
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",

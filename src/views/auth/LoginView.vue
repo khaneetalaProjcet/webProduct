@@ -47,7 +47,7 @@
             </v-sheet>
             <v-btn type="submit" class="my-6" height="40" text="ارسال کد تایید" variant="elevated" width="100%"
                 color="#B0863B" :disabled="!isValid" :loading="loading"></v-btn>
-            <p class="site-url">آدرس رسمی سامانه<span class="k-primary"> www.khanetala.ir </span>میباشد</p>
+            <p class="site-url">آدرس رسمی سامانه<span class="k-primary"> www.khaneetala.ir </span>میباشد</p>
         </v-form>
     </v-card>
 

@@ -132,7 +132,7 @@
         :loading="loading"
       ></v-btn>
       <p class="site-url">
-        آدرس رسمی سامانه<span class="k-primary"> www.khanetala.ir </span>میباشد
+        آدرس رسمی سامانه<span class="k-primary"> www.khaneetala.ir </span>میباشد
       </p>
     </v-form>
   </v-card>
