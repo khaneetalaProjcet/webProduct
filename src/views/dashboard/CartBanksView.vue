@@ -58,11 +58,9 @@
             :key="i"
             v-else
           >
+          
             <!-- icon cart -->
             <div class="d-flex justify-space-between align-center">
-              <!-- <div class="d-flex align-center">
-                <span>{{ item.name }}</span>
-              </div> -->
               <div class="d-flex align-center">
                 <i class="ibl64 ibl-sb" v-if="item.name == 'SAMAN'"></i>
 

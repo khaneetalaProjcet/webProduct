@@ -116,6 +116,24 @@
                 {{ formatNumber(wallet.blocked) }} تومان
               </p>
             </div>
+            <div class="d-flex justify-space-between mt-2">
+              <p class="text">در صف انتقال</p>
+              <v-progress-circular
+                v-if="walletLoading"
+                :size="10"
+                color="#fff"
+                indeterminate
+              ></v-progress-circular>
+
+              <!-- <p class="price my-1" v-else>{{ parseInt((wallet.goldWeight * goldPriceLive.buyPrice) +
+                            (wallet.balance))
+                            }} تومان
+                        </p> -->
+
+              <p class="price my-1" v-else>
+                {{ wallet.goldBlock }} گرم
+              </p>
+            </div>
           </div>
         </div>
       </v-col>
@@ -393,6 +411,7 @@ const wallet = ref({
   goldprice: 0,
   TotalAssets: 0,
   blocked: 0,
+  goldBlock : 0
 });
 
 const formatNumber = (num) => {
@@ -422,6 +441,7 @@ const GetWallet = async () => {
     wallet.value.goldWeight = response.goldWeight;
     wallet.value.TotalAssets = response.totalAssets;
     wallet.value.blocked = response.blocked;
+    wallet.value.goldBlock = response.goldBlock;
     return response;
   } catch (error) {
     if (error.response.status == 401) {

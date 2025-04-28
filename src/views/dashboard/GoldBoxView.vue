@@ -11,6 +11,7 @@
           <v-tabs v-model="tab" bg-color="white" class="tab-header">
             <v-tab value="one">خرید</v-tab>
             <v-tab value="two">فروش</v-tab>
+            <v-tab value="three">انتقال</v-tab>
           </v-tabs>
         </v-col>
       </v-row>
@@ -190,6 +191,78 @@
                       @click="CreateSell"
                       block
                       >فروش</v-btn
+                    >
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tabs-window-item>
+        <v-tabs-window-item value="three">
+          <v-container>
+            <v-row>
+              <v-col cols="12" class="pa-0 my-2">
+                <div class="d-flex flex-column goldbox-section transfer">
+                  <div
+                    class="d-flex flex-column flex-md-row justify-center w-100"
+                  >
+                    <div class="w-100 me-md-4">
+                      <span>وزن طلا (گرم)</span>
+                      <v-text-field
+                        v-model="transfer.goldWeight"
+                        variant="outlined"
+                        color="rgba(135, 104, 36, 1)"
+                        density="compact"
+                        class="transition-field"
+                        :rules="weightRules"
+                        @input="transferGoldweight"
+                      ></v-text-field>
+                    </div>
+                    <div class="w-100 ms-md-4">
+                      <span>کد ملی گیرنده</span>
+                      <v-text-field
+                        v-model="transfer.nationalCode"
+                        variant="outlined"
+                        color="rgba(135, 104, 36, 1)"
+                        density="compact"
+                        class="transition-field"
+                        :rules="nationalCodeRules"
+                      ></v-text-field>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column" v-if="showOtp">
+                    <v-otp-input
+                      :length="4"
+                      v-model="otp"
+                      type="number"
+                      variant="outlined"
+                      class="otp-input"
+                      inputmode="numeric"
+                      autocomplete="one-time-code"
+                      @input="handleOTPInput"
+                    ></v-otp-input>
+                    <p class="transfer-otp">
+                      زمان باقی مانده : {{ Transfertimer }} ثانیه
+                    </p>
+                  </div>
+                  <div class="d-flex justify-end w-100 mt-3">
+                    <v-btn
+                      color="#af8b4a"
+                      class="px-8"
+                      @click="createTransfer"
+                      :disabled="!validTransfer"
+                      :loading="createTransferLoading"
+                      v-if="!showOtp"
+                      >ثبت انتقال</v-btn
+                    >
+                    <v-btn
+                      color="#af8b4a"
+                      class="px-8"
+                      @click="VerifyTransferOtp"
+                      :disabled="!validTransfer"
+                      :loading="verifyTransferOtpLoading"
+                      v-else
+                      >تایید</v-btn
                     >
                   </div>
                 </div>
@@ -442,6 +515,104 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog max-width="500" v-model="transferModal" class="trade-modal">
+      <v-card class="trade-modal">
+        <div class="transferModal-content py-5">
+          <h3 class="my-4">فاکتور انتقال</h3>
+          <v-row>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>گرم انتقال :</p>
+                <p>{{ TransferInvoice.goldWeight }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>شماره فاکتور :</p>
+                <p>{{ TransferInvoice.invoiceId }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>تاریخ انتقال :</p>
+                <p>{{ TransferInvoice.date }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>زمان انتقال :</p>
+                <p>{{ TransferInvoice.time }}</p>
+              </div>
+            </v-col>
+            <v-divider></v-divider>
+            <v-col cols="12">
+              <div class="d-flex justify-start">
+                <p class="font-weight-bold">اطلاعات انتقال دهنده</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام :</p>
+                <p>{{ TransferInvoice.sender.firstName }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام خانوادگی :</p>
+                <p>{{ TransferInvoice.sender.lastName }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>کد ملی :</p>
+                <p>{{ TransferInvoice.sender.nationalCode }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>موجودی :</p>
+                <p>{{ TransferInvoice.sender.goldWeight }} گرم</p>
+              </div>
+            </v-col>
+            <v-divider></v-divider>
+            <v-col cols="12">
+              <div class="d-flex justify-start">
+                <p class="font-weight-bold">اطلاعات گیرنده</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام :</p>
+                <p>{{ TransferInvoice.reciever.firstName }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام خانوادگی :</p>
+                <p>{{ TransferInvoice.reciever.lastName }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>کد ملی :</p>
+                <p>{{ TransferInvoice.reciever.nationalCode }}</p>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+        <div class="d-flex justify-space-around mt-2 mb-7">
+          <v-btn
+            text="تایید انتقال"
+            class="pay-btn"
+            color="#9D7E3B"
+            block
+            :loading="transferOtpLoading"
+            @click="transferOtp"
+          ></v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <v-alert
       v-if="alertError"
       color="error"
@@ -478,11 +649,15 @@ import AuthService from "@/service/auth/auth";
 
 const route = useRoute();
 
+const transferModal = ref(false);
 const walletUser = ref("");
 const tab = ref(null);
 const loading = ref(false);
 const sellLoading = ref(false);
 const GoldPriceLoading = ref(false);
+const transferOtpLoading = ref(false);
+const verifyTransferOtpLoading = ref(false);
+const createTransferLoading = ref(false);
 const cartsLoading = ref(false);
 const errorMsg = ref("");
 const successMsg = ref("");
@@ -492,6 +667,13 @@ const buyModal = ref(false);
 const sellModal = ref(false);
 const isSwapped = ref(false);
 const historyTab = ref(null);
+const showOtp = ref(false);
+const Transfertimer = ref(120);
+const transfer = ref({
+  goldWeight: "",
+  nationalCode: "",
+});
+const otp = ref("");
 const carts = ref([]);
 const goldPriceLive = ref({
   sellPrice: "",
@@ -555,6 +737,25 @@ const invoice = ref({
   invoiceId: "",
   paymentUrl: "",
 });
+let timerInterval = null;
+const TransferInvoice = ref({
+  id: "",
+  time: "",
+  date: "",
+  goldWeight: "",
+  invoiceId: "",
+  reciever: {
+    firstName: "",
+    lastName: "",
+    nationalCode: "",
+  },
+  sender: {
+    firstName: "",
+    lastName: "",
+    nationalCode: "",
+    goldWeight: "",
+  },
+});
 const buyInfo = ref({
   goldprice: "",
   goldWeight: "",
@@ -599,6 +800,26 @@ const verifyDetail = ref({});
 const weightRules = [
   (v) => !!v || "مقدار ورودی نمی‌تواند خالی باشد",
   (v) => /^\d+(\.\d{1,3})?$/.test(v) || "فقط عدد مجاز است و حداکثر 3 رقم اعشار",
+];
+
+const nationalCodeRules = [
+  (v) => !!v || "کد ملی الزامی است",
+  (v) => /^\d{10}$/.test(v) || "کد ملی باید ۱۰ رقم باشد",
+  (v) => {
+    if (!/^\d{10}$/.test(v)) return true;
+
+    const check = +v[9];
+    const sum =
+      v
+        .split("")
+        .slice(0, 9)
+        .reduce((acc, x, i) => acc + +x * (10 - i), 0) % 11;
+    return (
+      (sum < 2 && check === sum) ||
+      (sum >= 2 && check + sum === 11) ||
+      "کد ملی نامعتبر است"
+    );
+  },
 ];
 
 const formatNumber = (num) => {
@@ -815,6 +1036,15 @@ const sellGoldweightConvert = () => {
   sellInfo.value.goldPrice = formatNumberWithCommas(calculatedPrice);
 };
 
+const transferGoldweight = () => {
+  transfer.value.goldWeight = transfer.value.goldWeight.replace(/[^0-9.]/g, "");
+  const parts = transfer.value.goldWeight.split(".");
+  if (parts.length > 1) {
+    parts[1] = parts[1].slice(0, 3);
+    transfer.value.goldWeight = parts[0] + "." + parts[1];
+  }
+};
+
 const swapFields = () => {
   isSwapped.value = !isSwapped.value;
 };
@@ -1015,6 +1245,126 @@ const VerifyTransaction = async (zarinpal) => {
       alertError.value = false;
     }, 10000);
   }
+};
+
+const validTransfer = computed(() => {
+  return (
+    weightRules.every((rule) => rule(transfer.value.goldWeight) === true) &&
+    nationalCodeRules.every(
+      (rule) => rule(transfer.value.nationalCode) === true
+    )
+  );
+});
+
+const createTransfer = async () => {
+  try {
+    createTransferLoading.value = true;
+    const response = await TradeService.CreateTransfer(transfer.value);
+    transferModal.value = true;
+    TransferInvoice.value = response.data;
+    TransferInvoice.value.id = response.data.id;
+    TransferInvoice.value.invoiceId = response.data.invoiceId;
+    TransferInvoice.value.date = response.data.date;
+    TransferInvoice.value.time = response.data.time;
+    TransferInvoice.value.sender.firstName = response.data.sender.firstName;
+    TransferInvoice.value.sender.lastName = response.data.sender.lastName;
+    TransferInvoice.value.sender.nationalCode =
+      response.data.sender.nationalCode;
+    TransferInvoice.value.sender.goldWeight =
+      response.data.sender.wallet.goldWeight;
+    TransferInvoice.value.reciever.firstName = response.data.reciever.firstName;
+    TransferInvoice.value.reciever.lastName = response.data.reciever.lastName;
+    TransferInvoice.value.reciever.nationalCode =
+      response.data.reciever.nationalCode;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    createTransferLoading.value = false;
+  }
+};
+
+const transferOtp = async () => {
+  try {
+    transferOtpLoading.value = true;
+    const response = await TradeService.TransferOtp(TransferInvoice.value.id);
+    transferModal.value = false;
+    showOtp.value = true;
+    startTransferTimer();
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    transferOtpLoading.value = false;
+  }
+};
+
+const VerifyTransferOtp = async () => {
+  try {
+    verifyTransferOtpLoading.value = true;
+    const response = await TradeService.VerifyTransferOtp(
+      otp.value,
+      TransferInvoice.value.id
+    );
+    successMsg.value = "طلای شما با موفقیت به انتقال داده شد";
+    alertSuccess.value = true;
+    setTimeout(() => {
+      alertSuccess.value = false;
+    }, 5000);
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    verifyTransferOtpLoading.value = false;
+  }
+};
+
+const startTransferTimer = () => {
+  Transfertimer.value = 120;
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+
+  // شروع تایمر جدید
+  timerInterval = setInterval(() => {
+    Transfertimer.value--;
+
+    if (Transfertimer.value <= 0) {
+      clearInterval(timerInterval);
+      showOtp.value = false;
+      transfer.value.nationalCode = null;
+      transfer.value.goldWeight = null;
+      errorMsg.value = "زمان تایید انتقال به پایان رسیده است";
+      alertError.value = true;
+      setTimeout(() => {
+        alertError.value = false;
+      }, 5000);
+    }
+  }, 1000);
 };
 
 onMounted(() => {
@@ -1225,6 +1575,22 @@ onUnmounted(() => {
   align-items: center;
 }
 
+.transferModal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.transferModal-content p {
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .transferModal-content p {
+    font-size: 14px;
+  }
+}
+
 .wallet-badge {
   background-color: rgba(56, 120, 93, 1);
   color: #fff;
@@ -1290,5 +1656,24 @@ onUnmounted(() => {
 .price-in-word {
   font-size: 13px;
   color: #696969;
+}
+
+.goldbox-section.transfer {
+  min-height: 20rem;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(175, 139, 74, 0.1);
+  border: 1px solid #af8b4a;
+  padding: 1rem;
+}
+
+.otp-input {
+  direction: ltr;
+}
+
+.transfer-otp{
+  font-size: 12px;
+  color: #696969;
+  margin-top: 0.5rem;
 }
 </style>

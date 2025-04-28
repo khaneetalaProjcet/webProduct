@@ -16,7 +16,7 @@ const LoginTemplate = axios.create({
 // before request
 LoginTemplate.interceptors.request.use(
   (config) => {
-    console.log(`location is ${window.location.href}`)
+    // console.log(`location is ${window.location.href}`)
     // if (window.location.href =  'https://khanetala.ir/Login') {
     //   window.location.href = 'https://app.khanetala.ir/Login';
     // }
