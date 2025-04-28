@@ -1322,7 +1322,10 @@ const VerifyTransferOtp = async () => {
       otp.value,
       TransferInvoice.value.id
     );
-    successMsg.value = "طلای شما با موفقیت به انتقال داده شد";
+    showOtp.value = false;
+    transfer.value.nationalCode = null;
+    transfer.value.goldWeight = null;
+    successMsg.value = response.msg;
     alertSuccess.value = true;
     setTimeout(() => {
       alertSuccess.value = false;
@@ -1349,7 +1352,6 @@ const startTransferTimer = () => {
     clearInterval(timerInterval);
   }
 
-  // شروع تایمر جدید
   timerInterval = setInterval(() => {
     Transfertimer.value--;
 
@@ -1650,7 +1652,7 @@ onUnmounted(() => {
 
 .trade-modal {
   border-radius: 10px !important;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 
 .price-in-word {
@@ -1671,7 +1673,7 @@ onUnmounted(() => {
   direction: ltr;
 }
 
-.transfer-otp{
+.transfer-otp {
   font-size: 12px;
   color: #696969;
   margin-top: 0.5rem;
