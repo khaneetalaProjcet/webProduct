@@ -2,7 +2,7 @@ import router from "@/router";
 import axios from "axios";
 
 const LoginTemplate = axios.create({
-  // baseURL: "https://khaneetala.ir/api",
+  // baseURL: "https://khanetala.ir/api",
   baseURL: "https://gateway.khanetala.ir/v1/main",
   headers: {
     "Content-Type": "application/json",

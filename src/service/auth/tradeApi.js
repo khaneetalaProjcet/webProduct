@@ -2,7 +2,7 @@ import router from "@/router";
 import axios from "axios";
 
 const TradeTemplate = axios.create({
-  // baseURL: "https://khaneetala.ir/api",
+  // baseURL: "https://khanetala.ir/api",
   baseURL: "https://gateway.khanetala.ir/v1/trade",
   headers: {
     "Content-Type": "application/json",
