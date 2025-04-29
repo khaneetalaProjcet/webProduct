@@ -1354,17 +1354,18 @@ const startTransferTimer = () => {
 
   timerInterval = setInterval(() => {
     Transfertimer.value--;
-
     if (Transfertimer.value <= 0) {
       clearInterval(timerInterval);
-      showOtp.value = false;
-      transfer.value.nationalCode = null;
-      transfer.value.goldWeight = null;
-      errorMsg.value = "زمان تایید انتقال به پایان رسیده است";
-      alertError.value = true;
-      setTimeout(() => {
-        alertError.value = false;
-      }, 5000);
+      if (showOtp.value){
+        showOtp.value = false;
+        transfer.value.nationalCode = null;
+        transfer.value.goldWeight = null;
+        errorMsg.value = "زمان تایید انتقال به پایان رسیده است";
+        alertError.value = true;
+        setTimeout(() => {
+          alertError.value = false;
+        }, 5000);
+      }
     }
   }, 1000);
 };
