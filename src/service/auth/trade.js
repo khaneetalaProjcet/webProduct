@@ -1,4 +1,5 @@
 import VerifyTemplate from "./api";
+import BranchTemplate from "./branch";
 import QueryTemplate from "./queryTemplate";
 import TradeTemplate from "./tradeApi";
 
@@ -100,6 +101,42 @@ const TradeService = {
       transPortId: id,
     });
     const response = await TradeTemplate.post(`/transPort/verifyotp`, body);
+    return response.data;
+  },
+
+  async GetBranches() {
+    const response = await BranchTemplate.get(`/branch/all`);
+    return response.data;
+  },
+
+  async GetSellers(id) {
+    const response = await BranchTemplate.get(`/branch/seller/all/${id}`);
+    return response.data;
+  },
+
+  async CreateUseGold(useGold) {
+    const body = JSON.stringify(useGold);
+    const response = await BranchTemplate.post(
+      `/branch/transAction/create`,
+      body
+    );
+    return response.data;
+  },
+
+  async UseGoldOtp(id) {
+    const body = JSON.stringify({
+      transActionId: id,
+    });
+    const response = await BranchTemplate.post(`/branch/transAction/otp`, body);
+    return response.data;
+  },
+
+  async VerifyUseGold(otp, id) {
+    const body = JSON.stringify({
+      otp: otp,
+      transActionId: id,
+    });
+    const response = await BranchTemplate.post(`branch/transAction/otp/verify`, body);
     return response.data;
   },
 };

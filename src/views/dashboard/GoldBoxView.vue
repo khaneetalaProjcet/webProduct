@@ -12,6 +12,7 @@
             <v-tab value="one">خرید</v-tab>
             <v-tab value="two">فروش</v-tab>
             <v-tab value="three">انتقال</v-tab>
+            <v-tab value="four">استفاده</v-tab>
           </v-tabs>
         </v-col>
       </v-row>
@@ -261,6 +262,89 @@
                       @click="VerifyTransferOtp"
                       :disabled="!validTransfer"
                       :loading="verifyTransferOtpLoading"
+                      v-else
+                      >تایید</v-btn
+                    >
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-tabs-window-item>
+        <v-tabs-window-item value="four">
+          <v-container>
+            <v-row>
+              <v-col cols="12" class="pa-0 my-2">
+                <div class="d-flex flex-column goldbox-section use">
+                  <v-row>
+                    <v-col cols="12" md="4" class="my-6">
+                      <v-text-field
+                        v-model="useGold.goldWeight"
+                        label="وزن طلا (گرم)"
+                        variant="outlined"
+                        color="rgba(135, 104, 36, 1)"
+                        class="transition-field"
+                        :rules="weightRules"
+                        @input="useGoldweight"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="4" class="my-6">
+                      <v-select
+                        v-model="useGold.branchId"
+                        :items="branches"
+                        label="شعبه ها"
+                        variant="outlined"
+                        :rules="BranchRules"
+                        item-title="name"
+                        item-value="id"
+                        @update:modelValue="defineSellers"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" md="4" class="my-6">
+                      <v-select
+                        v-model="useGold.sellerId"
+                        :items="seller"
+                        label="فروشنده"
+                        variant="outlined"
+                        :rules="BranchRules"
+                        item-title="lastName"
+                        item-value="id"
+                        v-if="useGold.branchId"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <div class="d-flex flex-column align-center" v-if="showUseGoldOtp">
+                    <p class="transfer-otp">کد احراز برای فروشنده ارسال شد</p>
+                    <v-otp-input
+                      :length="4"
+                      v-model="useGoldOtpInput"
+                      type="number"
+                      variant="outlined"
+                      class="otp-input"
+                      inputmode="numeric"
+                      autocomplete="one-time-code"
+                      @input="handleOTPInput"
+                    ></v-otp-input>
+                    <p class="transfer-otp">
+                      زمان باقی مانده : {{ UseGoldtimer }} ثانیه
+                    </p>
+                  </div>
+                  <div class="d-flex justify-end w-100 mt-3">
+                    <v-btn
+                      color="#af8b4a"
+                      class="px-8"
+                      @click="createUseGold"
+                      :loading="useGoldCreateLoading"
+                      :disabled="!validUseGold"
+                      v-if="!showUseGoldOtp"
+                      >ثبت استفاده</v-btn
+                    >
+
+                    <v-btn
+                      color="#af8b4a"
+                      class="px-8"
+                      @click="verifyUseGold"
+                      :loading="verifyUseGoldLoading"
                       v-else
                       >تایید</v-btn
                     >
@@ -613,6 +697,104 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog max-width="500" v-model="useGoldModal" class="trade-modal">
+      <v-card class="trade-modal">
+        <div class="transferModal-content py-5">
+          <h3 class="my-4">فاکتور استفاده از طلا</h3>
+          <v-row>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>گرم انتقال :</p>
+                <p>{{ useGoldInvoiceDetail.goldWeight }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>شماره فاکتور :</p>
+                <p>{{ useGoldInvoiceDetail.invoiceId }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>تاریخ ایجاد :</p>
+                <p>{{ useGoldInvoiceDetail.date }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>زمان ایجاد :</p>
+                <p>{{ useGoldInvoiceDetail.time }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>قیمت لحظه ای :</p>
+                <p>{{ formatNumber(useGoldInvoiceDetail.goldPrice) }} تومان</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>قیمت کل :</p>
+                <p>{{ formatNumber(useGoldInvoiceDetail.totalPrice) }} تومان</p>
+              </div>
+            </v-col>
+            <v-divider></v-divider>
+            <v-col cols="12">
+              <div class="d-flex justify-start">
+                <p class="font-weight-bold">اطلاعات کاربر</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام :</p>
+                <p>{{ useGoldInvoiceDetail.user.firstName }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام خانوادگی :</p>
+                <p>{{ useGoldInvoiceDetail.user.lastName }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>کد ملی :</p>
+                <p>{{ useGoldInvoiceDetail.user.nationalCode }}</p>
+              </div>
+            </v-col>
+            <v-divider></v-divider>
+            <v-col cols="12">
+              <div class="d-flex justify-start">
+                <p class="font-weight-bold">اطلاعات فروشنده</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام :</p>
+                <p>{{ useGoldInvoiceDetail.seller.firstName }}</p>
+              </div>
+            </v-col>
+            <v-col cols="6" class="my-1 my-md-2 pa-1">
+              <div class="d-flex align-center">
+                <p>نام خانوادگی :</p>
+                <p>{{ useGoldInvoiceDetail.seller.lastName }}</p>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+        <div class="d-flex justify-space-around mt-2 mb-7">
+          <v-btn
+            text="تایید استفاده"
+            class="pay-btn"
+            color="#9D7E3B"
+            block
+            :loading="useGoldOtpLoading"
+            @click="useGoldOtp"
+          ></v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <v-alert
       v-if="alertError"
       color="error"
@@ -657,8 +839,13 @@ const sellLoading = ref(false);
 const GoldPriceLoading = ref(false);
 const transferOtpLoading = ref(false);
 const verifyTransferOtpLoading = ref(false);
+const verifyUseGoldLoading = ref(false);
 const createTransferLoading = ref(false);
+const useGoldOtpLoading = ref(false);
 const cartsLoading = ref(false);
+const branchLoading = ref(false);
+const sellerLoading = ref(false);
+const useGoldCreateLoading = ref(false);
 const errorMsg = ref("");
 const successMsg = ref("");
 const alertError = ref(false);
@@ -668,12 +855,28 @@ const sellModal = ref(false);
 const isSwapped = ref(false);
 const historyTab = ref(null);
 const showOtp = ref(false);
+const showUseGoldOtp = ref(false);
 const Transfertimer = ref(120);
+const UseGoldtimer = ref(120);
 const transfer = ref({
   goldWeight: "",
   nationalCode: "",
 });
+const useGold = ref({
+  goldWeight: "",
+  branchId: "",
+  sellerId: "",
+});
+const useGoldInvoiceDetail = ref({});
+
+const branches = ref([
+  { label: "آنلاین", value: "0" },
+  { label: "کوچصفهان", value: "1" },
+]);
+const useGoldModal = ref(false);
+const seller = ref([]);
 const otp = ref("");
+const useGoldOtpInput = ref("");
 const carts = ref([]);
 const goldPriceLive = ref({
   sellPrice: "",
@@ -738,6 +941,7 @@ const invoice = ref({
   paymentUrl: "",
 });
 let timerInterval = null;
+let usegoldTimerInterval = null;
 const TransferInvoice = ref({
   id: "",
   time: "",
@@ -1042,6 +1246,15 @@ const transferGoldweight = () => {
   if (parts.length > 1) {
     parts[1] = parts[1].slice(0, 3);
     transfer.value.goldWeight = parts[0] + "." + parts[1];
+  }
+};
+
+const useGoldweight = () => {
+  useGold.value.goldWeight = useGold.value.goldWeight.replace(/[^0-9.]/g, "");
+  const parts = useGold.value.goldWeight.split(".");
+  if (parts.length > 1) {
+    parts[1] = parts[1].slice(0, 3);
+    useGold.value.goldWeight = parts[0] + "." + parts[1];
   }
 };
 
@@ -1356,7 +1569,7 @@ const startTransferTimer = () => {
     Transfertimer.value--;
     if (Transfertimer.value <= 0) {
       clearInterval(timerInterval);
-      if (showOtp.value){
+      if (showOtp.value) {
         showOtp.value = false;
         transfer.value.nationalCode = null;
         transfer.value.goldWeight = null;
@@ -1370,11 +1583,169 @@ const startTransferTimer = () => {
   }, 1000);
 };
 
+
+const startUsegoldTimer = () => {
+  UseGoldtimer.value = 120;
+  if (usegoldTimerInterval) {
+    clearInterval(usegoldTimerInterval);
+  }
+
+  usegoldTimerInterval = setInterval(() => {
+    UseGoldtimer.value--;
+    if (UseGoldtimer.value <= 0) {
+      clearInterval(usegoldTimerInterval);
+      if (showUseGoldOtp.value) {
+        showUseGoldOtp.value = false;
+        useGold.value.branchId = null;
+        useGold.value.sellerId = null;
+        useGold.value.goldWeight = null;
+        errorMsg.value = "زمان استفاده به پایان رسیده است";
+        alertError.value = true;
+        setTimeout(() => {
+          alertError.value = false;
+        }, 5000);
+      }
+    }
+  }, 1000);
+};
+
+
+const BranchRules = [(v) => !!v || "یک مورد را انتخاب کنید!"];
+
+const validUseGold = computed(() => {
+  return (
+    useGold.value.goldWeight &&
+    !weightRules.some((rule) => rule(useGold.value.goldWeight) !== true) &&
+    useGold.value.branchId &&
+    !BranchRules.some((rule) => rule(useGold.value.branchId) !== true) &&
+    (useGold.value.sellerId || true) &&
+    !BranchRules.some((rule) => rule(useGold.value.sellerId) !== true)
+  );
+});
+
+const GetBranches = async () => {
+  try {
+    branchLoading.value = true;
+    const response = await TradeService.GetBranches();
+    branches.value = response.data;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    branchLoading.value = false;
+  }
+};
+
+const defineSellers = async (id) => {
+  try {
+    sellerLoading.value = true;
+    const response = await TradeService.GetSellers(id);
+    seller.value = response.data;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    sellerLoading.value = false;
+  }
+};
+
+const createUseGold = async () => {
+  try {
+    useGoldCreateLoading.value = true;
+    const response = await TradeService.CreateUseGold(useGold.value);
+    useGoldInvoiceDetail.value = response.data;
+    console.log(useGoldInvoiceDetail.value);
+    useGoldModal.value = true;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    useGoldCreateLoading.value = false;
+  }
+};
+
+const useGoldOtp = async () => {
+  try {
+    useGoldOtpLoading.value = true;
+    const response = await TradeService.UseGoldOtp(useGoldInvoiceDetail.value.id);
+    useGoldModal.value = false;
+    showUseGoldOtp.value = true;
+    startUsegoldTimer()
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    useGoldOtpLoading.value = false;
+  }
+};
+
+const verifyUseGold = async () => {
+  try {
+    verifyUseGoldLoading.value = true;
+    const response = await TradeService.VerifyUseGold(useGoldOtpInput.value , useGoldInvoiceDetail.value.id);
+    showUseGoldOtp.value = false;
+    useGold.value.goldWeight = null;
+    useGold.value.sellerId = null;
+    useGold.value.branchId = null;
+    successMsg.value = response.msg;
+    alertSuccess.value = true;
+    setTimeout(() => {
+      alertSuccess.value = false;
+    }, 5000);
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    verifyUseGoldLoading.value = false;
+  }
+};
+
 onMounted(() => {
   GetGoldPrice();
   buyTransaction();
   sellTransaction();
   getCarts();
+  GetBranches();
   setInterval(() => {
     GetGoldPrice();
   }, 30000);
@@ -1678,5 +2049,18 @@ onUnmounted(() => {
   font-size: 12px;
   color: #696969;
   margin-top: 0.5rem;
+}
+
+.goldbox-section.use {
+  min-height: 20rem;
+  justify-content: space-between;
+  background-color: #fff;
+  border: 1px solid #78909c;
+  padding: 1rem;
+}
+
+.alert-gold {
+  background-color: rgba(175, 139, 74, 0.1);
+  color: #af8b4a;
 }
 </style>
