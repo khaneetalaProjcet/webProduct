@@ -77,7 +77,7 @@
                   </div> -->
                   <div class="wallet-box">
                     <p>موجودی کیف پول :</p>
-                    <p>{{ formatNumber(+walletUser?.balance) }} تومان</p>
+                    <p>{{ formatNumber(+userStore.user?.wallet?.balance) }} تومان</p>
                   </div>
                   <div class="d-flex justify-space-between py-2 px-4 my-1">
                     <p class="mb-0">گرم طلا :</p>
@@ -167,7 +167,7 @@
                   </div> -->
                   <div class="wallet-box sell">
                     <p>موجودی صندوق طلا :</p>
-                    <p>{{ walletUser.goldWeight }} گرم</p>
+                    <p>{{ userStore.user?.wallet?.goldWeight }} گرم</p>
                   </div>
                   <div class="d-flex justify-space-between py-2 px-4 my-1">
                     <p class="mb-0">گرم طلا :</p>
