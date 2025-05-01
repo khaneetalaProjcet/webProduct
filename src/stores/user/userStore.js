@@ -12,6 +12,8 @@ export const useUserStore = defineStore("user", () => {
       balance: "",
     },
   });
+  const errorMsg = ref("");
+  const alertError = ref(false);
 
   const GetUser = async () => {
     try {
@@ -19,7 +21,6 @@ export const useUserStore = defineStore("user", () => {
       user.value = response;
       return response;
     } catch (error) {
-      console.log(error);
       if (error.response.status == 401) {
         localStorage.clear();
         router.replace("/Login");
@@ -32,5 +33,5 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
-  return { user, GetUser };
+  return { user, GetUser, errorMsg, alertError };
 });

@@ -167,6 +167,9 @@ import {
 import DashboardService from "@/service/auth/dashboard";
 import router from "@/router";
 import PriceService from "@/service/auth/price";
+import { useUserStore } from "@/stores/user/userStore";
+
+const userStore = useUserStore();
 
 ChartJS.register(
   Title,
@@ -441,6 +444,7 @@ const GetGoldPrice = async () => {
 onMounted(() => {
   GetChartData();
   GetGoldPrice();
+  userStore.GetUser();
 });
 </script>
 

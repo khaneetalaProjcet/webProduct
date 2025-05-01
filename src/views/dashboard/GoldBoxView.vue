@@ -828,8 +828,11 @@ import { useRoute } from "vue-router";
 import router from "@/router";
 import { numberToWords } from "@persian-tools/persian-tools";
 import AuthService from "@/service/auth/auth";
+import { useUserStore } from "@/stores/user/userStore";
 
+const userStore = useUserStore();
 const route = useRoute();
+
 
 const transferModal = ref(false);
 const walletUser = ref("");
@@ -1745,6 +1748,7 @@ onMounted(() => {
   sellTransaction();
   getCarts();
   GetBranches();
+  userStore.GetUser();
   setInterval(() => {
     GetGoldPrice();
   }, 30000);

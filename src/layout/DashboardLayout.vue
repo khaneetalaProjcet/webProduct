@@ -149,14 +149,14 @@
       </v-col>
     </v-row>
     <v-alert
-      v-if="alertError"
+      v-if="userStore.alertError"
       color="error"
       border="bottom"
       elevation="2"
       class="k-alert alert-animatiton"
       closable
     >
-      {{ errorMsg }}
+      {{ userStore.errorMsg }}
     </v-alert>
 
     <v-alert
