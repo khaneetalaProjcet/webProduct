@@ -1373,6 +1373,7 @@ const CompleteSell = async () => {
     sellModal.value = false;
     successMsg.value = "طلای شما با موفقیت به فروش رسید";
     alertSuccess.value = true;
+    userStore.GetUser();
     setTimeout(() => {
       alertSuccess.value = false;
     }, 5000);
@@ -1543,6 +1544,7 @@ const VerifyTransferOtp = async () => {
     transfer.value.goldWeight = null;
     successMsg.value = response.msg;
     alertSuccess.value = true;
+    userStore.GetUser();
     setTimeout(() => {
       alertSuccess.value = false;
     }, 5000);
@@ -1723,6 +1725,7 @@ const verifyUseGold = async () => {
     useGold.value.branchId = null;
     successMsg.value = response.msg;
     alertSuccess.value = true;
+    userStore.GetUser();
     setTimeout(() => {
       alertSuccess.value = false;
     }, 5000);
