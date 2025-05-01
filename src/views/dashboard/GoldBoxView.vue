@@ -77,7 +77,7 @@
                   </div> -->
                   <div class="wallet-box">
                     <p>موجودی کیف پول :</p>
-                    <p>{{ formatNumber(walletUser.balance) }} تومان</p>
+                    <p>{{ formatNumber(+walletUser?.balance) }} تومان</p>
                   </div>
                   <div class="d-flex justify-space-between py-2 px-4 my-1">
                     <p class="mb-0">گرم طلا :</p>
@@ -1608,7 +1608,6 @@ const startUsegoldTimer = () => {
     }
   }, 1000);
 };
-
 
 const BranchRules = [(v) => !!v || "یک مورد را انتخاب کنید!"];
 

@@ -12,7 +12,7 @@
         variant="text"
         class="d-flex d-md-none"
       >
-        <span class="profile-text">{{ user.firstName }} عزیز</span>
+        <span class="profile-text">{{ userStore.user.firstName }} عزیز</span>
         <User class="mx-2" />
       </v-btn>
       <v-menu activator="#menu-activator-mobile">
@@ -90,7 +90,10 @@
       </v-col>
       <v-col cols="12" md="10">
         <div class="header">
-          <div v-if="!haveBank" class="d-flex justify-center align-center">
+          <div
+            v-if="userStore.user.isHaveBank == false"
+            class="d-flex justify-center align-center"
+          >
             <CartIcon />
             <p class="header-text">
               برای شروع معامله لطفا کارت بانکی خود را ثبت کنید
@@ -108,11 +111,11 @@
             v-else
           >
             <div class="assets-gold">
-              <p class="ma-0">موجودی طلایی: {{ user.wallet.goldWeight }} گرم</p>
+              <p class="ma-0">موجودی طلایی: {{ userStore.user?.wallet?.goldWeight }} گرم</p>
             </div>
             <div class="assets-price">
               <p class="ma-0">
-                موجودی کیف پول: {{ formatNumber(user.wallet.balance) }} تومان
+                موجودی کیف پول: {{ formatNumber(+userStore.user?.wallet?.balance) }} تومان
               </p>
             </div>
           </div>
@@ -122,7 +125,9 @@
             variant="text"
             class="d-none d-md-flex"
           >
-            <span class="profile-text">{{ user.firstName }} عزیز</span>
+            <span class="profile-text"
+              >{{ userStore.user?.firstName }} عزیز</span
+            >
             <User class="mx-2" />
           </v-btn>
           <v-menu activator="#menu-activator-desc">
@@ -228,9 +233,11 @@ import WalletIcon from "@/assets/images/icons/bankCart.vue";
 import { ref, onMounted } from "vue";
 import router from "@/router";
 import AuthService from "@/service/auth/auth";
+import { useUserStore } from "@/stores/user/userStore";
+
+const userStore = useUserStore();
 
 const drawer = ref(false);
-const user = ref({});
 const errorMsg = ref("");
 const alertError = ref(false);
 const cartDialog = ref(false);
@@ -238,7 +245,6 @@ const cartLoading = ref(false);
 const logoutLoading = ref(false);
 const cardNumber = ref("");
 const isValid = ref(false);
-const haveBank = ref(false);
 const alertSuccess = ref(false);
 const successMsg = ref("");
 
@@ -256,7 +262,7 @@ const submitCart = async () => {
     cartLoading.value = true;
     const response = await AuthService.BankCart(cardNumber.value);
     cartDialog.value = false;
-    GetUser();
+    userStore.GetUser();
     cardNumber.value = "";
     successMsg.value = "کارت با موفقیت ثبت شد";
     alertSuccess.value = true;
@@ -279,27 +285,27 @@ const submitCart = async () => {
   }
 };
 
-const GetUser = async () => {
-  try {
-    const response = await AuthService.Profile();
-    user.value = response;
-    localStorage.setItem("user", JSON.stringify(user.value.wallet));
-    if (response.isHaveBank == true) {
-      haveBank.value = true;
-    }
-    return response;
-  } catch (error) {
-    if (error.response.status == 401) {
-      localStorage.clear();
-      router.replace("/Login");
-    }
-    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
-    setTimeout(() => {
-      alertError.value = false;
-    }, 10000);
-  }
-};
+// const GetUser = async () => {
+//   try {
+//     const response = await AuthService.Profile();
+//     user.value = response;
+//     localStorage.setItem("user", JSON.stringify(user.value.wallet));
+//     if (response.isHaveBank == true) {
+//       haveBank.value = true;
+//     }
+//     return response;
+//   } catch (error) {
+//     if (error.response.status == 401) {
+//       localStorage.clear();
+//       router.replace("/Login");
+//     }
+//     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+//     alertError.value = true;
+//     setTimeout(() => {
+//       alertError.value = false;
+//     }, 10000);
+//   }
+// };
 
 const logout = async () => {
   try {
@@ -324,7 +330,8 @@ const formatNumber = (num) => {
 };
 
 onMounted(() => {
-  GetUser();
+  // GetUser();
+  userStore.GetUser();
 });
 </script>
 
