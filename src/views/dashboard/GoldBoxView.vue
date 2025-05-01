@@ -77,7 +77,9 @@
                   </div> -->
                   <div class="wallet-box">
                     <p>موجودی کیف پول :</p>
-                    <p>{{ formatNumber(+userStore.user?.wallet?.balance) }} تومان</p>
+                    <p>
+                      {{ formatNumber(+userStore.user?.wallet?.balance) }} تومان
+                    </p>
                   </div>
                   <div class="d-flex justify-space-between py-2 px-4 my-1">
                     <p class="mb-0">گرم طلا :</p>
@@ -180,7 +182,7 @@
                   </div>
                   <v-divider></v-divider>
                   <div class="d-flex justify-space-between py-2 px-4 my-1">
-                    <p class="mb-0">مبلغ قابل پرداخت :</p>
+                    <p class="mb-0">مبلغ قابل دریافت :</p>
                     <p class="mb-0">
                       {{ formatNumber(sellInfo.goldPrice) }} تومان
                     </p>
@@ -313,7 +315,10 @@
                       ></v-select>
                     </v-col>
                   </v-row>
-                  <div class="d-flex flex-column align-center" v-if="showUseGoldOtp">
+                  <div
+                    class="d-flex flex-column align-center"
+                    v-if="showUseGoldOtp"
+                  >
                     <p class="transfer-otp">کد احراز برای فروشنده ارسال شد</p>
                     <v-otp-input
                       :length="4"
@@ -488,74 +493,177 @@
       </div>
     </v-container>
 
-    <v-dialog max-width="500" v-model="buyModal" class="trade-modal">
-      <v-card class="trade-modal">
-        <v-alert
-          class="ma-4 text-center"
-          color="error"
-          text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
-          variant="tonal"
-        ></v-alert>
-        <div class="buyModal-content py-5">
-          <h3>فاکتور خرید</h3>
-          <div class="wallet-badge my-2">
-            <span class="pe-6">موجودی کیف پول</span>
-            <span>{{ paymentInfo.balance }} تومان</span>
-          </div>
-          <div
-            class="d-flex justify-space-evenly align-center w-100 my-2 k-text"
-          >
-            <p class="pe-6">مقدار طلا</p>
-            <p>{{ buyInfo.goldWeight }} گرم</p>
-          </div>
-          <div
-            class="d-flex justify-space-evenly align-center w-100 my-2 k-text"
-          >
-            <p class="pe-6">مبلغ</p>
-            <p>{{ buyInfo.goldprice }} تومان</p>
-          </div>
-          <div class="d-flex justify-space-evenly align-center w-100 my-2">
-            <span class="fee">کارمزد 0 درصد</span>
-            <div class="d-flex">
-              <span>{{ timer }}</span>
-              <TimerIcon />
+    <v-dialog
+      max-width="500"
+      v-model="buyModal"
+      transition="dialog-bottom-transition"
+    >
+      <v-card class="trade-modal buy">
+        <v-row>
+          <v-col cols="12">
+            <div class="d-flex justify-center">
+              <h3>فاکتور خرید</h3>
             </div>
-          </div>
-        </div>
-        <div class="my-4">
-          <v-select
-            v-model="paymentInfo.cartId"
-            :loading="cartsLoading"
-            label="انتخاب کارت"
-            :items="carts"
-            variant="outlined"
-            item-title="cardNumber"
-            item-value="id"
-            :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
-          >
-          </v-select>
-        </div>
-        <div class="d-flex justify-space-around mt-2 mb-7">
-          <v-btn
-            text="پرداخت مستقیم"
-            class="pay-btn"
-            color="#9D7E3B"
-            :disabled="!paymentInfo.cartId"
-            @click="CompleteBuy('direct')"
-          ></v-btn>
-          <v-btn
-            text="پرداخت از کیف پول"
-            class="pay-btn"
-            color="#9D7E3B"
-            variant="outlined"
-            @click="CompleteBuy('wallet')"
-          ></v-btn>
-        </div>
+          </v-col>
+          <v-col cols="12">
+            <v-alert
+              class="ma-0 text-center modal-alert"
+              color="#00603a"
+              text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
+              variant="tonal"
+            ></v-alert>
+          </v-col>
+          <v-col cols="12" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">مقدار طلا :</p>
+              <p>{{ buyInfo.goldWeight }} گرم</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">قیمت لحظه ای طلا :</p>
+              <p>{{ formatNumber(goldPriceLive.buyPrice) }} تومان</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">موجودی کیف پول :</p>
+              <p>{{ formatNumber(paymentInfo.balance) }} تومان</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">مبلغ قابل پرداخت :</p>
+              <p>{{ buyInfo.goldprice }} تومان</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">کارمزد :</p>
+              <p>0 ٪</p>
+            </div>
+          </v-col>
+          <v-col cols="12" class="my-0 my-md-2">
+            <v-select
+              v-model="paymentInfo.cartId"
+              :loading="cartsLoading"
+              label="انتخاب کارت"
+              :items="carts"
+              variant="underlined"
+              item-title="cardNumber"
+              item-value="id"
+              :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
+            >
+            </v-select>
+          </v-col>
+          <v-col cols="12">
+            <v-alert
+              class="ma-0 text-center modal-alert"
+              color="error"
+              variant="tonal"
+            >
+              پس از <span class="timer-color">{{ timer }}</span> ثانیه، فاکتور
+              شما منقضی میشود
+            </v-alert>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-2">
+            <v-btn
+              text="پرداخت مستقیم"
+              class="pay-btn"
+              color="#00603a"
+              :disabled="!paymentInfo.cartId"
+              @click="CompleteBuy('direct')"
+              block
+            ></v-btn>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-2">
+            <v-btn
+              text="پرداخت از کیف پول"
+              class="pay-btn"
+              color="#00603a"
+              variant="outlined"
+              @click="CompleteBuy('wallet')"
+              block
+            ></v-btn>
+          </v-col>
+        </v-row>
       </v-card>
     </v-dialog>
 
-    <v-dialog max-width="500" v-model="sellModal" class="trade-modal">
-      <v-card class="trade-modal">
+    <v-dialog
+      max-width="600"
+      v-model="sellModal"
+      class="trade-modal"
+      transition="dialog-bottom-transition"
+    >
+      <v-card class="trade-modal sell">
+        <v-row>
+          <v-col cols="12">
+            <div class="d-flex justify-center">
+              <h3>فاکتور فروش</h3>
+            </div>
+          </v-col>
+          <v-col cols="12">
+            <v-alert
+              class="ma-0 text-center modal-alert"
+              color="error"
+              text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
+              variant="tonal"
+            ></v-alert>
+          </v-col>
+          <v-col cols="12" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">مقدار طلا :</p>
+              <p>{{ sellInfo.goldWeight }} گرم</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">قیمت لحظه ای طلا :</p>
+              <p>{{ formatNumber(goldPriceLive.buyPrice) }} تومان</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">موجودی صندوق طلا :</p>
+              <p>{{ userStore.user?.wallet?.goldWeight }} گرم</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">مبلغ قابل دریافت :</p>
+              <p>{{ formatNumber(sellInfo.goldPrice) }} تومان</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
+            <div class="invoice-item">
+              <p class="ma-0">کارمزد :</p>
+              <p>1 ٪</p>
+            </div>
+          </v-col>
+          <v-col cols="12">
+            <v-alert
+              class="ma-0 text-center modal-alert"
+              color="error"
+              variant="tonal"
+            >
+              پس از <span class="timer-color">{{ timer }}</span> ثانیه، فاکتور
+              شما منقضی میشود
+            </v-alert>
+          </v-col>
+          <v-col cols="12" class="py-1 py-md-2">
+            <v-btn
+              text="تایید فروش"
+              class="pay-btn"
+              color="#930606"
+              @click="CompleteSell()"
+              block
+            ></v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+
+      <!-- <v-card class="trade-modal">
         <v-alert
           class="ma-4 text-center"
           color="error"
@@ -596,10 +704,15 @@
             @click="CompleteSell()"
           ></v-btn>
         </div>
-      </v-card>
+      </v-card> -->
     </v-dialog>
 
-    <v-dialog max-width="500" v-model="transferModal" class="trade-modal">
+    <v-dialog
+      max-width="500"
+      v-model="transferModal"
+      class="trade-modal"
+      transition="dialog-bottom-transition"
+    >
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
           <h3 class="my-4">فاکتور انتقال</h3>
@@ -697,7 +810,12 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog max-width="500" v-model="useGoldModal" class="trade-modal">
+    <v-dialog
+      max-width="500"
+      v-model="useGoldModal"
+      class="trade-modal"
+      transition="dialog-bottom-transition"
+    >
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
           <h3 class="my-4">فاکتور استفاده از طلا</h3>
@@ -832,7 +950,6 @@ import { useUserStore } from "@/stores/user/userStore";
 
 const userStore = useUserStore();
 const route = useRoute();
-
 
 const transferModal = ref(false);
 const walletUser = ref("");
@@ -1343,8 +1460,6 @@ const CreateSell = async () => {
     paymentSellInfo.value.invoiceId = response.transactionId;
     paymentSellInfo.value.balance = response.wallet.balance;
     paymentSellInfo.value.goldWeight = response.wallet.goldWeight;
-    sellInfo.value.goldPrice = "";
-    sellInfo.value.goldPrice = "";
     sellModal.value = true;
     return response;
   } catch (error) {
@@ -1588,7 +1703,6 @@ const startTransferTimer = () => {
   }, 1000);
 };
 
-
 const startUsegoldTimer = () => {
   UseGoldtimer.value = 120;
   if (usegoldTimerInterval) {
@@ -1695,10 +1809,12 @@ const createUseGold = async () => {
 const useGoldOtp = async () => {
   try {
     useGoldOtpLoading.value = true;
-    const response = await TradeService.UseGoldOtp(useGoldInvoiceDetail.value.id);
+    const response = await TradeService.UseGoldOtp(
+      useGoldInvoiceDetail.value.id
+    );
     useGoldModal.value = false;
     showUseGoldOtp.value = true;
-    startUsegoldTimer()
+    startUsegoldTimer();
     return response;
   } catch (error) {
     if (error.response.status == 401) {
@@ -1718,7 +1834,10 @@ const useGoldOtp = async () => {
 const verifyUseGold = async () => {
   try {
     verifyUseGoldLoading.value = true;
-    const response = await TradeService.VerifyUseGold(useGoldOtpInput.value , useGoldInvoiceDetail.value.id);
+    const response = await TradeService.VerifyUseGold(
+      useGoldOtpInput.value,
+      useGoldInvoiceDetail.value.id
+    );
     showUseGoldOtp.value = false;
     useGold.value.goldWeight = null;
     useGold.value.sellerId = null;
@@ -2030,7 +2149,29 @@ onUnmounted(() => {
 
 .trade-modal {
   border-radius: 10px !important;
-  padding: 2rem 1rem;
+  padding: 2rem;
+}
+
+.trade-modal.buy p {
+  font-size: 13px;
+}
+
+.trade-modal.buy .invoice-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0.2rem;
+  border-bottom: 1px solid rgba(0, 96, 58, 0.3);
+}
+
+.trade-modal.sell p {
+  font-size: 13px;
+}
+
+.trade-modal.sell .invoice-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0.2rem;
+  border-bottom: 1px solid rgb(147, 6, 6, 0.3);
 }
 
 .price-in-word {
@@ -2068,5 +2209,14 @@ onUnmounted(() => {
 .alert-gold {
   background-color: rgba(175, 139, 74, 0.1);
   color: #af8b4a;
+}
+
+.timer-color {
+  font-weight: bold;
+}
+
+.modal-alert {
+  padding: 0.5rem;
+  font-size: 13px;
 }
 </style>
