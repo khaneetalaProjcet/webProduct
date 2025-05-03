@@ -137,6 +137,21 @@
       </div>
     </v-col>
   </v-row>
+
+  <v-dialog max-width="500" v-model="successModal" class="trade-modal">
+    <v-card class="success-modal">
+      <div class="successModal-content py-5">
+        <h3>تایید ثبت کارت</h3>
+        <img
+          src="/src/assets/images/success-done.jpg"
+          alt="ثبت کارت"
+          width="200"
+          height="200"
+        />
+        <p>{{ doneText }}</p>
+      </div>
+    </v-card>
+  </v-dialog>
   
   <v-alert
     v-if="alertError"
@@ -181,6 +196,8 @@ const user = ref({
   firstName: "",
   lastName: "",
 });
+const successModal = ref(false);
+const doneText = ref("");
 
 const limitCartInput = () => {
   cardNumber.value = cardNumber.value.replace(/\D/g, "").slice(0, 16);
@@ -190,13 +207,18 @@ const submitCart = async () => {
   try {
     cartLoading.value = true;
     const response = await AuthService.BankCart(cardNumber.value);
-    cardNumber.value = "";
-    successMsg.value = "کارت با موفقیت ثبت شد";
-    alertSuccess.value = true;
-    getCarts()
+    getCarts();
+    cardNumber.value = null;
+    doneText.value = response.msg || 'کارت با موفقیت ثبت شد';
+    successModal.value = true;
     setTimeout(() => {
-      alertSuccess.value = false;
-    }, 10000);
+      successModal.value = false;
+    }, 5000);
+    // successMsg.value = "کارت با موفقیت ثبت شد";
+    // alertSuccess.value = true;
+    // setTimeout(() => {
+    //   alertSuccess.value = false;
+    // }, 10000);
     return response;
   } catch (error) {
     if (error.response.status == 401) {
@@ -366,5 +388,26 @@ onMounted(() => {
 
 .list-cart-box .number {
   font-size: 14px;
+}
+
+.success-modal {
+  border-radius: 10px !important;
+  padding: 2rem;
+}
+
+.successModal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.successModal-content p {
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .successModal-content p {
+    font-size: 14px;
+  }
 }
 </style>
