@@ -251,7 +251,7 @@
       {{ successMsg }}
     </v-alert>
 
-    <v-dialog v-model="depositDialog" width="400">
+    <v-dialog v-model="depositDialog" width="500">
       <v-card class="cart-Dialog">
         <div class="my-1">
           <p>مبلغ مورد نظر را جهت واریز وارد نمایید</p>
@@ -300,7 +300,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="withdrawDialog" width="400">
+    <v-dialog v-model="withdrawDialog" width="500">
       <v-card class="cart-Dialog">
         <div class="title my-1">
           <p>مبلغ مورد نظر را جهت برداشت وارد نمایید</p>
@@ -319,6 +319,18 @@
           <div v-if="withdrawAmount">
             <p class="amount-word">{{ amountInWords }}</p>
           </div>
+          <v-select
+            v-model="selectCartId"
+            :loading="cartsLoading"
+            label="انتخاب کارت"
+            :items="carts"
+            density="compact"
+            variant="outlined"
+            item-title="cardNumber"
+            item-value="id"
+            class="mt-3"
+            :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
+          ></v-select>
           <v-btn
             type="submit"
             text="برداشت از حساب"
@@ -362,6 +374,8 @@ import InfoIcon from "@/assets/images/icons/InfoIcon.vue";
 
 const route = useRoute();
 
+const selectCartsLoading = ref(false);
+const selectCartId = ref("");
 const errorMsg = ref("");
 const alertError = ref(false);
 const alertSuccess = ref(false);
@@ -538,7 +552,8 @@ const withdraw = async () => {
   try {
     withdrawLoading.value = true;
     const response = await TradeService.WithdrawWallet(
-      withdrawAmount.value.replaceAll(",", "")
+      withdrawAmount.value.replaceAll(",", ""),
+      selectCartId.value,
     );
     withdrawDialog.value = false;
     doneText.value = `مبلغ ${withdrawAmount.value} پس از تایید کارشناس طی 72 ساعت آینده به حساب شما واریز خواهد شد.`;

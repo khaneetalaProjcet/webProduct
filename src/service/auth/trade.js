@@ -67,9 +67,10 @@ const TradeService = {
     return response.data;
   },
 
-  async WithdrawWallet(withdrawDetail) {
+  async WithdrawWallet(withdrawDetail, cartId) {
     const body = JSON.stringify({
       amount: withdrawDetail,
+      cartId: cartId
     });
     const response = await TradeTemplate.post("/withdraw", body);
     return response.data;
@@ -136,7 +137,10 @@ const TradeService = {
       otp: otp,
       transActionId: id,
     });
-    const response = await BranchTemplate.post(`branch/transAction/otp/verify`, body);
+    const response = await BranchTemplate.post(
+      `branch/transAction/otp/verify`,
+      body
+    );
     return response.data;
   },
 };

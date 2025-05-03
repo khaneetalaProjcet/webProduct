@@ -2312,10 +2312,12 @@ onUnmounted(() => {
 }
 
 .allWallet-text.buy {
-  background-color: rgba(0, 147, 88, 0.3);
+  border-right: 1px solid rgba(0, 147, 88, 0.3);
+  background-color: #fff;
 }
 
 .allWallet-text.sell {
-  background-color: rgba(189, 76, 72, 0.1);
+  border-right: 1px solid rgba(189, 76, 72, 0.1);
+  background-color: #fff;
 }
 </style>
