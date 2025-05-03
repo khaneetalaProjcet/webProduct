@@ -41,8 +41,9 @@
                       density="compact"
                       @input="buyGoldweightConvert"
                       :rules="validateWeight"
-                      class="transition-field"
-                    ></v-text-field>
+                      class="transition-field goldconvert-input"
+                    >
+                    </v-text-field>
                   </div>
                   <div class="d-flex justify-center align-center order-2">
                     <v-btn
@@ -63,8 +64,16 @@
                       color="rgba(135, 104, 36, 1)"
                       density="compact"
                       @input="buyGoldpriceConvert"
-                      class="transition-field"
-                    ></v-text-field>
+                      class="transition-field goldconvert-input"
+                    >
+                      <template #append-inner>
+                        <span
+                          class="allWallet-text buy"
+                          @click="allWalletInBuy()"
+                          >تمام موجودی</span
+                        >
+                      </template>
+                    </v-text-field>
                     <p class="price-in-word">{{ BuyAmountInWords }}</p>
                   </div>
                 </div>
@@ -135,7 +144,16 @@
                       density="compact"
                       @input="sellGoldweightConvert"
                       :rules="weightRules"
-                    ></v-text-field>
+                      class="transition-field goldconvert-input"
+                    >
+                      <template #append-inner>
+                        <span
+                          class="allWallet-text sell"
+                          @click="allWalletInSell()"
+                          >تمام موجودی</span
+                        >
+                      </template>
+                    </v-text-field>
                   </div>
                   <div class="d-flex justify-center align-center order-2">
                     <v-btn
@@ -155,6 +173,7 @@
                       variant="outlined"
                       color="rgba(135, 104, 36, 1)"
                       density="compact"
+                      class="transition-field goldconvert-input"
                       @input="sellGoldpriceConvert"
                     ></v-text-field>
                     <p class="price-in-word">{{ SellAmountInWords }}</p>
@@ -1263,7 +1282,14 @@ const buyGoldpriceConvert = (e) => {
   //   buyInfo.value.goldprice / goldPriceLive.value.buyPrice
   // ).toFixed(3);
 
-  const cursorPosition = e.target.selectionStart;
+  let cursorPosition;
+
+  if (!e?.target?.selectionStart) {
+    cursorPosition = e.toString().length;
+  } else {
+    cursorPosition = e.target.selectionStart;
+  }
+
   const originalLength = buyInfo.value.goldprice.length;
 
   const rawValue = removeCommas(buyInfo.value.goldprice).replace(/[^0-9]/g, "");
@@ -1278,8 +1304,6 @@ const buyGoldpriceConvert = (e) => {
 
   let main = first.split("");
   let main2 = `${main[0]}${main[1]}${main[2]}${main[3]}${main[4]}`;
-  console.log(main2);
-  // console.log(first , second)
   ///////////////////////////////////////
 
   buyInfo.value.goldWeight = main2;
@@ -1292,14 +1316,14 @@ const buyGoldpriceConvert = (e) => {
 
   buyInfo.value.goldprice = formattedValue;
 
-  nextTick(() => {
-    const newLength = formattedValue.length;
-    const offset = newLength - originalLength;
-    e.target.setSelectionRange(
-      cursorPosition + offset,
-      cursorPosition + offset
-    );
-  });
+  // nextTick(() => {
+  //   const newLength = formattedValue.length;
+  //   const offset = newLength - originalLength;
+  //   e.target.setSelectionRange(
+  //     cursorPosition + offset,
+  //     cursorPosition + offset
+  //   );
+  // });
 };
 
 const buyGoldweightConvert = () => {
@@ -1338,12 +1362,9 @@ const sellGoldpriceConvert = (e) => {
   );
   const numericValue = parseInt(rawValue || 0);
   let first = (numericValue / goldPriceLive.value.buyPrice).toFixed(5);
-  console.log("ddd", first);
 
   let secondFirst = first.split("");
   let mainWeight = `${secondFirst[0]}${secondFirst[1]}${secondFirst[2]}${secondFirst[3]}${secondFirst[4]}`;
-  console.log("ddd222", mainWeight);
-  // console.log(mainWeight)
   // sellInfo.value.goldWeight = (
   //   numericValue / goldPriceLive.value.sellPrice
   // ).toFixed(3);
@@ -1829,7 +1850,6 @@ const createUseGold = async () => {
     useGoldCreateLoading.value = true;
     const response = await TradeService.CreateUseGold(useGold.value);
     useGoldInvoiceDetail.value = response.data;
-    console.log(useGoldInvoiceDetail.value);
     useGoldModal.value = true;
     return response;
   } catch (error) {
@@ -1908,6 +1928,16 @@ const verifyUseGold = async () => {
   } finally {
     verifyUseGoldLoading.value = false;
   }
+};
+
+const allWalletInBuy = () => {
+  buyInfo.value.goldprice = userStore.user?.wallet?.balance;
+  buyGoldpriceConvert(buyInfo.value.goldprice);
+};
+
+const allWalletInSell = () => {
+  sellInfo.value.goldWeight = userStore.user?.wallet?.goldWeight;
+  sellGoldweightConvert();
 };
 
 onMounted(() => {
@@ -2265,5 +2295,27 @@ onUnmounted(() => {
 .modal-alert {
   padding: 0.5rem;
   font-size: 13px;
+}
+
+.allWallet-text {
+  font-size: 12px;
+  font-weight: 100;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  min-width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.allWallet-text.buy {
+  background-color: rgba(0, 147, 88, 0.3);
+}
+
+.allWallet-text.sell {
+  background-color: rgba(189, 76, 72, 0.1);
 }
 </style>
