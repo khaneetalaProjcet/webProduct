@@ -1515,6 +1515,7 @@ const CompleteSell = async () => {
     const response = await TradeService.complateSellTransaction(
       paymentSellInfo.value
     );
+    userStore.GetUser();
     sellModal.value = false;
     doneText.value = response.msg || "طلای شما با موفقیت به فروش رسید";
     successModal.value = true;

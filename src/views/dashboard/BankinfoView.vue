@@ -130,9 +130,7 @@
                             }} تومان
                         </p> -->
 
-              <p class="price my-1" v-else>
-                {{ wallet.goldBlock }} گرم
-              </p>
+              <p class="price my-1" v-else>{{ wallet.goldBlock }} گرم</p>
             </div>
           </div>
         </div>
@@ -280,7 +278,7 @@
             density="compact"
             variant="outlined"
             item-title="cardNumber"
-            item-value="id" 
+            item-value="id"
             class="mt-3"
             :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
           ></v-select>
@@ -334,6 +332,21 @@
         </v-form>
       </v-card>
     </v-dialog>
+
+    <v-dialog max-width="500" v-model="successModal" class="trade-modal">
+      <v-card class="success-modal">
+        <div class="successModal-content py-5">
+          <h3>تایید فاکتور کیف پول</h3>
+          <img
+            src="/src/assets/images/success-done.jpg"
+            alt="قبت کارت"
+            width="200"
+            height="200"
+          />
+          <p>{{ doneText }}</p>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -369,6 +382,8 @@ const withdrawAmount = ref("");
 const isValidPrice = ref("");
 const depositLoading = ref(false);
 const successMsg = ref("");
+const successModal = ref(false);
+const doneText = ref("");
 const filter = ref([
   {
     text: "همه",
@@ -411,7 +426,7 @@ const wallet = ref({
   goldprice: 0,
   TotalAssets: 0,
   blocked: 0,
-  goldBlock : 0
+  goldBlock: 0,
 });
 
 const formatNumber = (num) => {
@@ -484,7 +499,8 @@ const GetGoldPrice = async () => {
 const deposit = async () => {
   try {
     const response = await TradeService.DepositWallet(
-      priceAmount.value.replaceAll(",", "") , cartId.value
+      priceAmount.value.replaceAll(",", ""),
+      cartId.value
     );
     paymentUrl.value = response.url;
     window.location.href = paymentUrl.value;
@@ -525,11 +541,16 @@ const withdraw = async () => {
       withdrawAmount.value.replaceAll(",", "")
     );
     withdrawDialog.value = false;
-    successMsg.value = `مبلغ ${withdrawAmount.value} پس از تایید کارشناس به حساب شما واریز خواهد شد.`;
-    alertSuccess.value = true;
+    doneText.value = `مبلغ ${withdrawAmount.value} پس از تایید کارشناس طی 72 ساعت آینده به حساب شما واریز خواهد شد.`;
+    successModal.value = true;
     setTimeout(() => {
-      alertSuccess.value = false;
-    }, 5000);
+      successModal.value = false;
+    }, 10000);
+    // successMsg.value = `مبلغ ${withdrawAmount.value} پس از تایید کارشناس به حساب شما واریز خواهد شد.`;
+    // alertSuccess.value = true;
+    // setTimeout(() => {
+    //   alertSuccess.value = false;
+    // }, 5000);
     GetWallet();
     withdrawTransaction();
     return response;
@@ -940,5 +961,26 @@ onMounted(() => {
   font-size: 12px;
   color: #b00020;
   padding-bottom: 0.5rem;
+}
+
+.success-modal {
+  border-radius: 10px !important;
+  padding: 2rem;
+}
+
+.successModal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.successModal-content p {
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .successModal-content p {
+    font-size: 14px;
+  }
 }
 </style>
