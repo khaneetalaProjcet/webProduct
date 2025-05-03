@@ -111,11 +111,14 @@
             v-else
           >
             <div class="assets-gold">
-              <p class="ma-0">موجودی طلایی: {{ userStore.user?.wallet?.goldWeight }} گرم</p>
+              <p class="ma-0">
+                موجودی طلایی: {{ userStore.user?.wallet?.goldWeight }} گرم
+              </p>
             </div>
             <div class="assets-price">
               <p class="ma-0">
-                موجودی کیف پول: {{ formatNumber(+userStore.user?.wallet?.balance) }} تومان
+                موجودی کیف پول:
+                {{ formatNumber(+userStore.user?.wallet?.balance) }} تومان
               </p>
             </div>
           </div>
@@ -200,6 +203,22 @@
       </v-form>
     </v-card>
   </v-dialog>
+
+  <v-dialog max-width="500" v-model="successModal" class="trade-modal">
+    <v-card class="success-modal">
+      <div class="successModal-content py-5">
+        <h3>تایید ثبت کارت</h3>
+        <img
+          src="/src/assets/images/success-done.jpg"
+          alt="قبت کارت"
+          width="200"
+          height="200"
+        />
+        <p>{{ doneText }}</p>
+      </div>
+    </v-card>
+  </v-dialog>
+
   <div class="bottom-nav d-md-none">
     <RouterLink class="bottom-nav-box" to="/">
       <DashboardIcon class="dashboard-icon" />
@@ -247,6 +266,8 @@ const cardNumber = ref("");
 const isValid = ref(false);
 const alertSuccess = ref(false);
 const successMsg = ref("");
+const successModal = ref(false);
+const doneText = ref("");
 
 const cartValidationRule = [
   (v) => /^\d{16}$/.test(v) || "شماره کارت باید 16 رقم باشد",
@@ -264,11 +285,17 @@ const submitCart = async () => {
     cartDialog.value = false;
     userStore.GetUser();
     cardNumber.value = "";
-    successMsg.value = "کارت با موفقیت ثبت شد";
-    alertSuccess.value = true;
+    doneText.value = response.msg;
+    successModal.value = true;
     setTimeout(() => {
-      alertSuccess.value = false;
-    }, 10000);
+      successModal.value = false;
+      router.replace("/Carts");
+    }, 5000);
+    // successMsg.value = "کارت با موفقیت ثبت شد";
+    // alertSuccess.value = true;
+    // setTimeout(() => {
+    //   alertSuccess.value = false;
+    // }, 10000);
     return response;
   } catch (error) {
     if (error.response.status == 401) {
@@ -560,6 +587,27 @@ onMounted(() => {
   }
 
   .assets-gold {
+    font-size: 14px;
+  }
+}
+
+.success-modal {
+  border-radius: 10px !important;
+  padding: 2rem;
+}
+
+.successModal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.successModal-content p {
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .successModal-content p {
     font-size: 14px;
   }
 }

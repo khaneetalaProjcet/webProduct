@@ -571,6 +571,7 @@
               text="پرداخت مستقیم"
               class="pay-btn"
               color="#00603a"
+              :loading="directPayLoading"
               :disabled="!paymentInfo.cartId"
               @click="CompleteBuy('direct')"
               block
@@ -582,6 +583,7 @@
               class="pay-btn"
               color="#00603a"
               variant="outlined"
+              :loading="walletPayLoading"
               @click="CompleteBuy('wallet')"
               block
             ></v-btn>
@@ -656,6 +658,7 @@
               text="تایید فروش"
               class="pay-btn"
               color="#930606"
+              :loading="CompleteSellLoading"
               @click="CompleteSell()"
               block
             ></v-btn>
@@ -913,6 +916,21 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog max-width="500" v-model="successModal" class="trade-modal">
+      <v-card class="trade-modal">
+        <div class="transferModal-content py-5">
+          <h3>تایید فاکتور</h3>
+          <img
+            src="/src/assets/images/success-done.jpg"
+            alt="تایید فاکتور"
+            width="200"
+            height="200"
+          />
+          <p>{{ doneText }}</p>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <v-alert
       v-if="alertError"
       color="error"
@@ -951,11 +969,13 @@ import { useUserStore } from "@/stores/user/userStore";
 const userStore = useUserStore();
 const route = useRoute();
 
+const successModal = ref(false);
 const transferModal = ref(false);
 const walletUser = ref("");
 const tab = ref(null);
 const loading = ref(false);
 const sellLoading = ref(false);
+const CompleteSellLoading = ref(false);
 const GoldPriceLoading = ref(false);
 const transferOtpLoading = ref(false);
 const verifyTransferOtpLoading = ref(false);
@@ -965,6 +985,8 @@ const useGoldOtpLoading = ref(false);
 const cartsLoading = ref(false);
 const branchLoading = ref(false);
 const sellerLoading = ref(false);
+const walletPayLoading = ref(false);
+const directPayLoading = ref(false);
 const useGoldCreateLoading = ref(false);
 const errorMsg = ref("");
 const successMsg = ref("");
@@ -978,6 +1000,7 @@ const showOtp = ref(false);
 const showUseGoldOtp = ref(false);
 const Transfertimer = ref(120);
 const UseGoldtimer = ref(120);
+const doneText = ref("فاکتور شما با موفقیت ثبت شد");
 const transfer = ref({
   goldWeight: "",
   nationalCode: "",
@@ -1416,17 +1439,23 @@ const CreateBuy = async () => {
 
 const CompleteBuy = async (paymentMethod) => {
   try {
-    loading.value = true;
     if (paymentMethod == "wallet") {
+      walletPayLoading.value = true;
       paymentInfo.value.isFromWallet = true;
     } else {
+      directPayLoading.value = true;
       paymentInfo.value.isFromWallet = false;
     }
     // paymentInfo.value.amount = buyInfo.value.goldprice;
     const response = await TradeService.complateTransaction(paymentInfo.value);
     if (response.isFromWallet == true) {
       buyModal.value = false;
-      router.replace("/");
+      doneText.value = response.msg;
+      successModal.value = true;
+      setTimeout(() => {
+        successModal.value = false;
+        router.replace("/");
+      }, 5000);
     } else {
       invoice.value.paymentUrl = response.paymentUrl;
       invoice.value.invoiceId = response.invoiceId;
@@ -1444,7 +1473,8 @@ const CompleteBuy = async (paymentMethod) => {
       alertError.value = false;
     }, 5000);
   } finally {
-    loading.value = false;
+    walletPayLoading.value = false;
+    directPayLoading.value = false;
     buyTransaction();
   }
 };
@@ -1479,19 +1509,24 @@ const CreateSell = async () => {
 
 const CompleteSell = async () => {
   try {
-    sellLoading.value = true;
+    CompleteSellLoading.value = true;
     // paymentSellInfo.value.amount = sellInfo.value.goldPrice;
     paymentSellInfo.value.fee = 1;
     const response = await TradeService.complateSellTransaction(
       paymentSellInfo.value
     );
     sellModal.value = false;
-    successMsg.value = "طلای شما با موفقیت به فروش رسید";
-    alertSuccess.value = true;
-    userStore.GetUser();
+    doneText.value = response.msg || "طلای شما با موفقیت به فروش رسید";
+    successModal.value = true;
     setTimeout(() => {
-      alertSuccess.value = false;
+      successModal.value = false;
     }, 5000);
+    // successMsg.value = "طلای شما با موفقیت به فروش رسید";
+    // alertSuccess.value = true;
+    // userStore.GetUser();
+    // setTimeout(() => {
+    //   alertSuccess.value = false;
+    // }, 5000);
     return response;
   } catch (error) {
     if (error.response.status == 401) {
@@ -1504,7 +1539,7 @@ const CompleteSell = async () => {
       alertError.value = false;
     }, 5000);
   } finally {
-    sellLoading.value = false;
+    CompleteSellLoading.value = false;
     sellTransaction();
   }
 };
@@ -1657,12 +1692,17 @@ const VerifyTransferOtp = async () => {
     showOtp.value = false;
     transfer.value.nationalCode = null;
     transfer.value.goldWeight = null;
-    successMsg.value = response.msg;
-    alertSuccess.value = true;
     userStore.GetUser();
+    doneText.value = response.msg;
+    successModal.value = true;
     setTimeout(() => {
-      alertSuccess.value = false;
+      successModal.value = false;
     }, 5000);
+    // successMsg.value = response.msg;
+    // alertSuccess.value = true;
+    // setTimeout(() => {
+    //   alertSuccess.value = false;
+    // }, 5000);
     return response;
   } catch (error) {
     if (error.response.status == 401) {
@@ -1842,12 +1882,17 @@ const verifyUseGold = async () => {
     useGold.value.goldWeight = null;
     useGold.value.sellerId = null;
     useGold.value.branchId = null;
-    successMsg.value = response.msg;
-    alertSuccess.value = true;
     userStore.GetUser();
+    doneText.value = response.msg;
+    successModal.value = true;
     setTimeout(() => {
-      alertSuccess.value = false;
+      successModal.value = false;
     }, 5000);
+    // successMsg.value = response.msg;
+    // alertSuccess.value = true;
+    // setTimeout(() => {
+    //   alertSuccess.value = false;
+    // }, 5000);
     return response;
   } catch (error) {
     if (error.response.status == 401) {
@@ -1919,6 +1964,7 @@ const startTimer = () => {
       stopTimer();
       buyModal.value = false;
       sellModal.value = false;
+      paymentInfo.value.cartId = null;
     }
   }, 1000);
 };
