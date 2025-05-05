@@ -328,7 +328,7 @@
                         label="کد فروشنده"
                         variant="outlined"
                         :rules="BranchRules"
-                        item-title="(item) => `کد ${item.code}-${item.firstName[0]}.${item.lastName}`"
+                        item-title="`کد ${item.code}-${item.firstName[0]}.${item.lastName}`"
                         item-value="id"
                         v-if="useGold.branchId"
                       ></v-select>
