@@ -328,7 +328,7 @@
                         label="فروشنده"
                         variant="outlined"
                         :rules="BranchRules"
-                        item-title="lastName"
+                        item-title="code"
                         item-value="id"
                         v-if="useGold.branchId"
                       ></v-select>
