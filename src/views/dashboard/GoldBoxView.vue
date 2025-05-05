@@ -325,10 +325,10 @@
                       <v-select
                         v-model="useGold.sellerId"
                         :items="seller"
-                        label="فروشنده"
+                        label="کد فروشنده"
                         variant="outlined"
                         :rules="BranchRules"
-                        item-title="code"
+                        item-title="(item) => `کد ${item.code}-${item.firstName.split()[0]}.${item.lastName}`"
                         item-value="id"
                         v-if="useGold.branchId"
                       ></v-select>
