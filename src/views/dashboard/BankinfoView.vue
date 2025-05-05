@@ -312,10 +312,16 @@
             color="rgba(135, 104, 36, 1)"
             density="compact"
             label="مبلغ (تومان)"
-            class="mb-0 mt-2"
+            class="mb-0 mt-2 goldconvert-input"
             :rules="validatePrice"
             @input="limitWithdrawInput"
-          ></v-text-field>
+          >
+            <template #append-inner>
+              <span class="allWallet-text" @click="allWallet()"
+                >تمام موجودی</span
+              >
+            </template>
+          </v-text-field>
           <div v-if="withdrawAmount">
             <p class="amount-word">{{ amountInWords }}</p>
           </div>
@@ -553,7 +559,7 @@ const withdraw = async () => {
     withdrawLoading.value = true;
     const response = await TradeService.WithdrawWallet(
       withdrawAmount.value.replaceAll(",", ""),
-      selectCartId.value,
+      selectCartId.value
     );
     withdrawDialog.value = false;
     doneText.value = `مبلغ ${withdrawAmount.value} پس از تایید کارشناس طی 72 ساعت آینده به حساب شما واریز خواهد شد.`;
@@ -727,6 +733,11 @@ watch(depositDialog, (newValue) => {
     priceAmount.value = "";
   }
 });
+
+const allWallet = () => {
+  withdrawAmount.value = wallet.value.balance;
+  limitWithdrawInput()
+};
 
 onMounted(() => {
   GetWallet();
@@ -997,5 +1008,21 @@ onMounted(() => {
   .successModal-content p {
     font-size: 14px;
   }
+}
+
+.allWallet-text {
+  font-size: 12px;
+  font-weight: 100;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  min-width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid rgba(0, 147, 88, 0.3);
+  background-color: #fff;
 }
 </style>

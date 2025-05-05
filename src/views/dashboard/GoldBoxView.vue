@@ -513,7 +513,7 @@
     </v-container>
 
     <v-dialog
-      max-width="500"
+      max-width="600"
       v-model="buyModal"
       transition="dialog-bottom-transition"
     >
@@ -730,7 +730,7 @@
     </v-dialog>
 
     <v-dialog
-      max-width="500"
+      max-width="600"
       v-model="transferModal"
       class="trade-modal"
       transition="dialog-bottom-transition"
@@ -833,7 +833,7 @@
     </v-dialog>
 
     <v-dialog
-      max-width="500"
+      max-width="600"
       v-model="useGoldModal"
       class="trade-modal"
       transition="dialog-bottom-transition"
@@ -935,7 +935,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog max-width="500" v-model="successModal" class="trade-modal">
+    <v-dialog max-width="600" v-model="successModal" class="trade-modal">
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
           <h3>تایید فاکتور</h3>
@@ -1135,6 +1135,7 @@ const paymentInfo = ref({
   isFromWallet: "",
   balance: 0,
   cartId: null,
+  wallet: {},
 });
 
 const paymentSellInfo = ref({
@@ -1142,6 +1143,7 @@ const paymentSellInfo = ref({
   isFromWallet: "",
   balance: 0,
   goldWeight: 0,
+  wallet: {},
 });
 
 const payInfo = ref({
@@ -1439,6 +1441,7 @@ const CreateBuy = async () => {
     payInfo.value.goldWeight = buyInfo.value.goldWeight;
     payInfo.value.goldPrice = goldPriceLive.value.buyPrice;
     const response = await TradeService.createInvoice(payInfo.value);
+    paymentInfo.value.wallet = response.wallet;
     paymentInfo.value.invoiceId = response.transactionId;
     paymentInfo.value.balance = response.wallet.balance;
     buyModal.value = true;
@@ -1508,6 +1511,7 @@ const CreateSell = async () => {
     paySellInfo.value.goldWeight = sellInfo.value.goldWeight;
     paySellInfo.value.goldPrice = goldPriceLive.value.sellPrice;
     const response = await TradeService.createSellInvoice(paySellInfo.value);
+    paymentSellInfo.value.wallet = response.wallet;
     paymentSellInfo.value.invoiceId = response.transactionId;
     paymentSellInfo.value.balance = response.wallet.balance;
     paymentSellInfo.value.goldWeight = response.wallet.goldWeight;
@@ -2230,7 +2234,7 @@ onUnmounted(() => {
 }
 
 .trade-modal.buy p {
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .trade-modal.buy .invoice-item {
@@ -2241,7 +2245,7 @@ onUnmounted(() => {
 }
 
 .trade-modal.sell p {
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .trade-modal.sell .invoice-item {
