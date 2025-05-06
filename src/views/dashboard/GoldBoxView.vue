@@ -526,6 +526,7 @@
           </v-col>
           <v-col cols="12">
             <v-alert
+              v-if="buyPaymentInfo.totalPrice != buyInfo.goldprice"
               class="ma-0 text-center modal-alert"
               color="#00603a"
               text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
@@ -535,25 +536,25 @@
           <v-col cols="12" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">مقدار طلا :</p>
-              <p>{{ buyInfo.goldWeight }} گرم</p>
+              <p>{{ buyPaymentInfo.goldWeight }} گرم</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">قیمت لحظه ای طلا :</p>
-              <p>{{ formatNumber(goldPriceLive.buyPrice) }} تومان</p>
+              <p>{{ formatNumber(buyPaymentInfo.goldPrice) }} تومان</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">موجودی کیف پول :</p>
-              <p>{{ formatNumber(paymentInfo.balance) }} تومان</p>
+              <p>{{ formatNumber(buyPaymentInfo.balance) }} تومان</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">مبلغ قابل پرداخت :</p>
-              <p>{{ buyInfo.goldprice }} تومان</p>
+              <p>{{ formatNumber(buyPaymentInfo.totalPrice) }} تومان</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
@@ -626,6 +627,7 @@
           </v-col>
           <v-col cols="12">
             <v-alert
+              v-if="sellPaymentInfo.totalPrice != sellInfo.goldPrice"
               class="ma-0 text-center modal-alert"
               color="error"
               text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
@@ -635,25 +637,25 @@
           <v-col cols="12" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">مقدار طلا :</p>
-              <p>{{ sellInfo.goldWeight }} گرم</p>
+              <p>{{ sellPaymentInfo.goldWeight }} گرم</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">قیمت لحظه ای طلا :</p>
-              <p>{{ formatNumber(goldPriceLive.buyPrice) }} تومان</p>
+              <p>{{ formatNumber(sellPaymentInfo.goldPrice) }} تومان</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">موجودی صندوق طلا :</p>
-              <p>{{ userStore.user?.wallet?.goldWeight }} گرم</p>
+              <p>{{ sellPaymentInfo.balance }} گرم</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
             <div class="invoice-item">
               <p class="ma-0">مبلغ قابل دریافت :</p>
-              <p>{{ formatNumber(sellInfo.goldPrice) }} تومان</p>
+              <p>{{ formatNumber(sellPaymentInfo.totalPrice) }} تومان</p>
             </div>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-3 px-2 my-md-2">
@@ -950,6 +952,26 @@
       </v-card>
     </v-dialog>
 
+    <!-- <v-dialog
+      max-width="400"
+      v-model="errorDialog"
+      class="error-dialog"
+    ></v-dialog> -->
+    <v-dialog max-width="600" v-model="errorDialog" class="trade-modal">
+      <v-card class="trade-modal">
+        <div class="transferModal-content py-5">
+          <h3>خطا</h3>
+          <img
+            src="/src/assets/images/error.jpg"
+            alt="خطا"
+            width="200"
+            height="200"
+          />
+          <p class="text-lg">{{ errorMsg }}</p>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <v-alert
       v-if="alertError"
       color="error"
@@ -988,6 +1010,7 @@ import { useUserStore } from "@/stores/user/userStore";
 const userStore = useUserStore();
 const route = useRoute();
 
+const errorDialog = ref(false);
 const successModal = ref(false);
 const transferModal = ref(false);
 const walletUser = ref("");
@@ -1136,6 +1159,20 @@ const paymentInfo = ref({
   balance: 0,
   cartId: null,
   wallet: {},
+});
+
+const buyPaymentInfo = ref({
+  goldWeight: "",
+  totalPrice: "",
+  goldPrice: "",
+  balance: "",
+});
+
+const sellPaymentInfo = ref({
+  goldWeight: "",
+  totalPrice: "",
+  goldPrice: "",
+  balance: "",
 });
 
 const paymentSellInfo = ref({
@@ -1441,9 +1478,12 @@ const CreateBuy = async () => {
     payInfo.value.goldWeight = buyInfo.value.goldWeight;
     payInfo.value.goldPrice = goldPriceLive.value.buyPrice;
     const response = await TradeService.createInvoice(payInfo.value);
-    paymentInfo.value.wallet = response.wallet;
     paymentInfo.value.invoiceId = response.transactionId;
     paymentInfo.value.balance = response.wallet.balance;
+    buyPaymentInfo.value.goldWeight = response.data.goldWeight;
+    buyPaymentInfo.value.goldPrice = response.data.goldPrice;
+    buyPaymentInfo.value.totalPrice = response.data.totalPrice;
+    buyPaymentInfo.value.balance = response.wallet.balance;
     buyModal.value = true;
     return response;
   } catch (error) {
@@ -1452,9 +1492,9 @@ const CreateBuy = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
+      errorDialog.value = false;
     }, 5000);
   } finally {
     loading.value = false;
@@ -1492,9 +1532,10 @@ const CompleteBuy = async (paymentMethod) => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
+      errorDialog.value = false;
     }, 5000);
   } finally {
     walletPayLoading.value = false;
@@ -1511,10 +1552,14 @@ const CreateSell = async () => {
     paySellInfo.value.goldWeight = sellInfo.value.goldWeight;
     paySellInfo.value.goldPrice = goldPriceLive.value.sellPrice;
     const response = await TradeService.createSellInvoice(paySellInfo.value);
-    paymentSellInfo.value.wallet = response.wallet;
+    // paymentSellInfo.value.wallet = response.wallet;
     paymentSellInfo.value.invoiceId = response.transactionId;
     paymentSellInfo.value.balance = response.wallet.balance;
     paymentSellInfo.value.goldWeight = response.wallet.goldWeight;
+    sellPaymentInfo.value.goldWeight = response.data.goldWeight;
+    sellPaymentInfo.value.goldPrice = response.data.goldPrice;
+    sellPaymentInfo.value.totalPrice = response.data.totalPrice;
+    sellPaymentInfo.value.balance = response.wallet.goldWeight;
     sellModal.value = true;
     return response;
   } catch (error) {
@@ -1523,9 +1568,10 @@ const CreateSell = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
+      errorDialog.value = false;
     }, 5000);
   } finally {
     sellLoading.value = false;
@@ -1560,9 +1606,10 @@ const CompleteSell = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
+      errorDialog.value = false;
     }, 5000);
   } finally {
     CompleteSellLoading.value = false;
@@ -1590,10 +1637,10 @@ const sellTransaction = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
-    }, 10000);
+      errorDialog.value = false;
+    }, 5000);
   } finally {
     TransactionLoading.value = false;
   }
@@ -1613,10 +1660,10 @@ const buyTransaction = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
-    }, 10000);
+      errorDialog.value = false;
+    }, 5000);
   } finally {
     TransactionLoading.value = false;
   }
@@ -1633,10 +1680,10 @@ const VerifyTransaction = async (zarinpal) => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
-    }, 10000);
+      errorDialog.value = false;
+    }, 5000);
   }
 };
 
@@ -1676,9 +1723,9 @@ const createTransfer = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
+      errorDialog.value = false;
     }, 5000);
   } finally {
     createTransferLoading.value = false;
@@ -1862,9 +1909,9 @@ const createUseGold = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
+      errorDialog.value = false;
     }, 5000);
   } finally {
     useGoldCreateLoading.value = false;
@@ -1925,9 +1972,9 @@ const verifyUseGold = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
+      errorDialog.value = false;
     }, 5000);
   } finally {
     verifyUseGoldLoading.value = false;
@@ -2323,5 +2370,12 @@ onUnmounted(() => {
 .allWallet-text.sell {
   border-right: 1px solid rgba(189, 76, 72, 0.1);
   background-color: #fff;
+}
+
+.error-dialog {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
