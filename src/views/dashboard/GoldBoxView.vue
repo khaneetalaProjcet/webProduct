@@ -526,7 +526,7 @@
           </v-col>
           <v-col cols="12">
             <v-alert
-              v-if="buyPaymentInfo.totalPrice != buyInfo.goldprice"
+              v-if="buyPaymentInfo.totalPrice != buyInfo.goldprice.replaceAll(',','')"
               class="ma-0 text-center modal-alert"
               color="#00603a"
               text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
@@ -627,7 +627,7 @@
           </v-col>
           <v-col cols="12">
             <v-alert
-              v-if="sellPaymentInfo.totalPrice != sellInfo.goldPrice"
+              v-if="sellPaymentInfo.totalPrice != sellInfo.goldPrice.replaceAll(',','')"
               class="ma-0 text-center modal-alert"
               color="error"
               text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
@@ -952,11 +952,6 @@
       </v-card>
     </v-dialog>
 
-    <!-- <v-dialog
-      max-width="400"
-      v-model="errorDialog"
-      class="error-dialog"
-    ></v-dialog> -->
     <v-dialog max-width="600" v-model="errorDialog" class="trade-modal">
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
