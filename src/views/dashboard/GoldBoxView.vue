@@ -526,7 +526,10 @@
           </v-col>
           <v-col cols="12">
             <v-alert
-              v-if="buyPaymentInfo.totalPrice != buyInfo.goldprice.replaceAll(',','')"
+              v-if="
+                buyPaymentInfo.totalPrice !=
+                buyInfo.goldprice.replaceAll(',', '')
+              "
               class="ma-0 text-center modal-alert"
               color="#00603a"
               text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
@@ -627,7 +630,10 @@
           </v-col>
           <v-col cols="12">
             <v-alert
-              v-if="sellPaymentInfo.totalPrice != sellInfo.goldPrice.replaceAll(',','')"
+              v-if="
+                sellPaymentInfo.totalPrice !=
+                sellInfo.goldPrice.replaceAll(',', '')
+              "
               class="ma-0 text-center modal-alert"
               color="error"
               text="مبلغ انتخابی شما طبق فاکتور زیر اصلاح شد"
@@ -1116,6 +1122,7 @@ const filter = ref([
   },
 ]);
 let interval = ref(null);
+let intervalGoldPrice = null;
 const invoice = ref({
   invoiceId: "",
   paymentUrl: "",
@@ -1993,7 +2000,9 @@ onMounted(() => {
   getCarts();
   GetBranches();
   userStore.GetUser();
-  setInterval(() => {
+
+
+  intervalGoldPrice = setInterval(() => {
     GetGoldPrice();
   }, 30000);
 
@@ -2055,6 +2064,10 @@ const stopTimer = () => {
 
 onUnmounted(() => {
   stopTimer();
+    if (intervalGoldPrice) {
+    clearInterval(intervalGoldPrice);
+    intervalGoldPrice = null;
+  }
 });
 </script>
 
