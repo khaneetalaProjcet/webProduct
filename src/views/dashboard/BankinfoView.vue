@@ -518,6 +518,7 @@ const GetGoldPrice = async () => {
 
 const deposit = async () => {
   try {
+    depositLoading.value = true;
     const response = await TradeService.DepositWallet(
       priceAmount.value.replaceAll(",", ""),
       cartId.value
@@ -536,6 +537,7 @@ const deposit = async () => {
       alertError.value = false;
     }, 10000);
   } finally {
+        depositLoading.value = false;
   }
 };
 
