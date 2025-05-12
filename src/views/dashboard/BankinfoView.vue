@@ -303,7 +303,7 @@
     <v-dialog v-model="withdrawDialog" width="500">
       <v-card class="cart-Dialog">
         <div class="title my-1">
-          <p>مبلغ مورد نظر را جهت برداشت وارد نمایید</p>
+          <p>مبلغ برداشت باید بیشتر از 100,000 تومان باشد</p>
         </div>
         <v-form ref="form" v-model="isValidPrice" @submit.prevent="withdraw">
           <v-text-field
@@ -395,7 +395,6 @@ import InfoIcon from "@/assets/images/icons/InfoIcon.vue";
 
 const route = useRoute();
 
-const selectCartsLoading = ref(false);
 const selectCartId = ref("");
 const errorMsg = ref("");
 const alertError = ref(false);
@@ -611,6 +610,7 @@ const withdraw = async () => {
 const validatePrice = [
   (v) => !!v || "مقدار ورودی نمی‌تواند خالی باشد",
   (v) => /^\d+$/.test(v.replace(/,/g, "")) || "فقط عدد مجاز است",
+  (v) => parseInt(v.replace(/,/g, "")) > 99999 || "",
 ];
 
 const isValidcharge = computed(() => {

@@ -590,57 +590,6 @@
                 <p>{{ item.seller.firstName }} {{ item.seller.lastName }}</p>
               </template>
             </v-data-table>
-            <!-- <v-data-table
-              :headers="Transactionheaders"
-              :items="UseGoldTransactionItems"
-              :loading="TransactionLoading"
-              class="transaction-table"
-            >
-              <template v-slot:item.status="{ item }">
-                <div class="">
-                  <v-chip
-                    :text="
-                      item.status == 'completed'
-                        ? 'موفق'
-                        : item.status == 'pending'
-                        ? 'نامشخص'
-                        : 'ناموفق'
-                    "
-                    :color="
-                      item.status == 'completed'
-                        ? 'green'
-                        : item.status == 'pending'
-                        ? '#666666'
-                        : 'red'
-                    "
-                    size="small"
-                  ></v-chip>
-                </div>
-              </template>
-              <template v-slot:item.goldPrice="{ item }">
-                <p>{{ formatNumber(item.goldPrice) }}</p>
-              </template>
-              <template v-slot:item.totalPrice="{ item }">
-                <p>{{ formatNumber(item.totalPrice) }}</p>
-              </template>
-              <template v-slot:item.tradeType="{ item }">
-                <div class="">
-                  <v-chip
-                    :text="
-                      item.tradeType == 0
-                        ? 'آنلاین'
-                        : item.tradeType == 1
-                        ? 'تلفنی'
-                        : item.tradeType == 2
-                        ? 'حضوری'
-                        : 'حواله'
-                    "
-                    color="#78909C"
-                    size="small"
-                  ></v-chip>
-                </div>
-              </template>
-            </v-data-table> -->
           </v-tabs-window-item>
         </v-tabs-window>
       </div>
