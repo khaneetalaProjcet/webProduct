@@ -559,6 +559,11 @@ onMounted(() => {
     hue-rotate(125deg) brightness(99%) contrast(100%);
 }
 
+.bottom-nav-box.router-link-exact-active span{
+  margin-top: 0.2rem;
+  font-weight: bold;
+}
+
 #menu-activator-desc {
   margin-right: auto;
 }

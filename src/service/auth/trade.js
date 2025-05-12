@@ -28,6 +28,16 @@ const TradeService = {
     return response.data;
   },
 
+  async GoldBoxTransferTransactions(filterTransactions) {
+    const response = await QueryTemplate.get(`/user/transports?status=${filterTransactions.status}`);
+    return response.data;
+  },
+
+    async UseGoldTransferTransactions(filterTransactions) {
+    const response = await BranchTemplate.get(`/branch/user/transactions?status=${filterTransactions.status}`);
+    return response.data;
+  },
+
   async CreateCart() {
     const body = JSON.stringify();
     const response = await QueryTemplate.post(`/createCart`);

@@ -385,6 +385,8 @@
           <v-tabs v-model="historyTab" bg-color="white" class="w-100">
             <v-tab value="one">خرید</v-tab>
             <v-tab value="two">فروش</v-tab>
+            <v-tab value="three">انتقال</v-tab>
+            <v-tab value="four">استفاده</v-tab>
           </v-tabs>
           <div class="d-flex justify-start justify-md-end w-100 mt-3">
             <v-combobox
@@ -507,6 +509,138 @@
                 </div>
               </template>
             </v-data-table>
+          </v-tabs-window-item>
+
+          <v-tabs-window-item value="three" class="transaction-box">
+            <v-data-table
+              :headers="TransferTransactionheaders"
+              :items="TransferTransactionItems"
+              :loading="TransactionLoading"
+              class="transaction-table"
+            >
+              <template v-slot:item.reciever="{ item }">
+                <p>
+                  {{ item.reciever.firstName }} {{ item.reciever.lastName }}
+                </p>
+              </template>
+
+              <template v-slot:item.sender="{ item }">
+                <p>{{ item.sender.firstName }} {{ item.sender.lastName }}</p>
+              </template>
+
+              <template v-slot:item.status="{ item }">
+                <div class="">
+                  <v-chip
+                    :text="
+                      item.status == 'completed'
+                        ? 'موفق'
+                        : item.status == 'pending'
+                        ? 'نامشخص'
+                        : 'ناموفق'
+                    "
+                    :color="
+                      item.status == 'completed'
+                        ? 'green'
+                        : item.status == 'pending'
+                        ? '#666666'
+                        : 'red'
+                    "
+                    size="small"
+                  ></v-chip>
+                </div>
+              </template>
+            </v-data-table>
+          </v-tabs-window-item>
+
+          <v-tabs-window-item value="four" class="transaction-box">
+            <v-data-table
+              :headers="UseGoldTransactionheaders"
+              :items="UseGoldTransactionItems"
+              :loading="TransactionLoading"
+              class="transaction-table"
+            >
+              <template v-slot:item.status="{ item }">
+                <div class="">
+                  <v-chip
+                    :text="
+                      item.status == 'completed'
+                        ? 'موفق'
+                        : item.status == 'pending'
+                        ? 'نامشخص'
+                        : 'ناموفق'
+                    "
+                    :color="
+                      item.status == 'completed'
+                        ? 'green'
+                        : item.status == 'pending'
+                        ? '#666666'
+                        : 'red'
+                    "
+                    size="small"
+                  ></v-chip>
+                </div>
+              </template>
+              <template v-slot:item.goldPrice="{ item }">
+                <p>{{ formatNumber(item.goldPrice) }}</p>
+              </template>
+              <template v-slot:item.totalPrice="{ item }">
+                <p>{{ formatNumber(item.totalPrice) }}</p>
+              </template>
+              <template v-slot:item.seller="{ item }">
+                <p>{{ item.seller.firstName }} {{ item.seller.lastName }}</p>
+              </template>
+            </v-data-table>
+            <!-- <v-data-table
+              :headers="Transactionheaders"
+              :items="UseGoldTransactionItems"
+              :loading="TransactionLoading"
+              class="transaction-table"
+            >
+              <template v-slot:item.status="{ item }">
+                <div class="">
+                  <v-chip
+                    :text="
+                      item.status == 'completed'
+                        ? 'موفق'
+                        : item.status == 'pending'
+                        ? 'نامشخص'
+                        : 'ناموفق'
+                    "
+                    :color="
+                      item.status == 'completed'
+                        ? 'green'
+                        : item.status == 'pending'
+                        ? '#666666'
+                        : 'red'
+                    "
+                    size="small"
+                  ></v-chip>
+                </div>
+              </template>
+              <template v-slot:item.goldPrice="{ item }">
+                <p>{{ formatNumber(item.goldPrice) }}</p>
+              </template>
+              <template v-slot:item.totalPrice="{ item }">
+                <p>{{ formatNumber(item.totalPrice) }}</p>
+              </template>
+              <template v-slot:item.tradeType="{ item }">
+                <div class="">
+                  <v-chip
+                    :text="
+                      item.tradeType == 0
+                        ? 'آنلاین'
+                        : item.tradeType == 1
+                        ? 'تلفنی'
+                        : item.tradeType == 2
+                        ? 'حضوری'
+                        : 'حواله'
+                    "
+                    color="#78909C"
+                    size="small"
+                  ></v-chip>
+                </div>
+              </template>
+            </v-data-table> -->
           </v-tabs-window-item>
         </v-tabs-window>
       </div>
@@ -852,7 +986,7 @@
           <v-row>
             <v-col cols="6" class="my-1 my-md-2 pa-1">
               <div class="d-flex align-center">
-                <p>گرم انتقال :</p>
+                <p>استفاده به وزن :</p>
                 <p>{{ useGoldInvoiceDetail.goldWeight }}</p>
               </div>
             </v-col>
@@ -1073,6 +1207,65 @@ const timer = ref(30);
 const TransactionLoading = ref(false);
 const SellTransactionItems = ref();
 const BuyTransactionItems = ref();
+const TransferTransactionItems = ref("");
+const UseGoldTransactionItems = ref("");
+const TransferTransactionheaders = ref([
+  {
+    title: "تاریخ",
+    key: "date",
+  },
+  {
+    title: "زمان",
+    key: "time",
+  },
+  {
+    title: "وزن طلا(گرم)",
+    key: "goldWeight",
+  },
+  {
+    title: "فرستنده",
+    key: "sender",
+  },
+  {
+    title: "گیرنده",
+    key: "reciever",
+  },
+  {
+    title: "وضعیت",
+    key: "status",
+  },
+]);
+
+const UseGoldTransactionheaders = ref([
+  {
+    title: "تاریخ",
+    key: "date",
+  },
+  {
+    title: "زمان",
+    key: "time",
+  },
+  {
+    title: "وزن طلا(گرم)",
+    key: "goldWeight",
+  },
+    {
+    title: "قیمت نهایی(تومان)",
+    key: "totalPrice",
+  },
+  {
+    title: "قیمت طلا در لحظه(تومان)",
+    key: "goldPrice",
+  },
+  {
+    title: "فروشنده",
+    key: "seller",
+  },
+  {
+    title: "وضعیت",
+    key: "status",
+  },
+]);
 const Transactionheaders = ref([
   {
     title: "تاریخ",
@@ -1623,6 +1816,8 @@ const filterChange = (filterValue) => {
   filterTransaction.value.status = filterValue.value;
   sellTransaction();
   buyTransaction();
+  transferTransaction();
+  useGoldTransaction();
 };
 
 const sellTransaction = async () => {
@@ -1639,9 +1834,55 @@ const sellTransaction = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    errorDialog.value = true;
+    alertError.value = true;
     setTimeout(() => {
-      errorDialog.value = false;
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    TransactionLoading.value = false;
+  }
+};
+
+const transferTransaction = async () => {
+  try {
+    TransactionLoading.value = true;
+    const response = await TradeService.GoldBoxTransferTransactions(
+      filterTransaction.value
+    );
+    TransferTransactionItems.value = response.data;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    TransactionLoading.value = false;
+  }
+};
+
+const useGoldTransaction = async () => {
+  try {
+    TransactionLoading.value = true;
+    const response = await TradeService.UseGoldTransferTransactions(
+      filterTransaction.value
+    );
+    UseGoldTransactionItems.value = response.data;
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
     }, 5000);
   } finally {
     TransactionLoading.value = false;
@@ -2000,7 +2241,8 @@ onMounted(() => {
   getCarts();
   GetBranches();
   userStore.GetUser();
-
+  transferTransaction();
+  useGoldTransaction();
 
   intervalGoldPrice = setInterval(() => {
     GetGoldPrice();
@@ -2064,7 +2306,7 @@ const stopTimer = () => {
 
 onUnmounted(() => {
   stopTimer();
-    if (intervalGoldPrice) {
+  if (intervalGoldPrice) {
     clearInterval(intervalGoldPrice);
     intervalGoldPrice = null;
   }

@@ -365,6 +365,21 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <v-dialog max-width="600" v-model="errorDialog" class="trade-modal">
+      <v-card class="trade-modal">
+        <div class="transferModal-content py-5">
+          <h3>خطا</h3>
+          <img
+            src="/src/assets/images/error.jpg"
+            alt="خطا"
+            width="200"
+            height="200"
+          />
+          <p class="text-lg">{{ errorMsg }}</p>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -403,6 +418,7 @@ const isValidPrice = ref("");
 const depositLoading = ref(false);
 const successMsg = ref("");
 const successModal = ref(false);
+const errorDialog = ref(false);
 const doneText = ref("");
 const filter = ref([
   {
@@ -532,12 +548,12 @@ const deposit = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
-    }, 10000);
+      errorDialog.value = false;
+    }, 5000);
   } finally {
-        depositLoading.value = false;
+    depositLoading.value = false;
   }
 };
 
@@ -548,10 +564,10 @@ const VerifyDeposit = async (zarinpal) => {
     return response;
   } catch (error) {
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
-    }, 10000);
+      errorDialog.value = false;
+    }, 5000);
   } finally {
   }
 };
@@ -583,10 +599,10 @@ const withdraw = async () => {
       router.replace("/Login");
     }
     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    alertError.value = true;
+    errorDialog.value = true;
     setTimeout(() => {
-      alertError.value = false;
-    }, 10000);
+      errorDialog.value = false;
+    }, 5000);
   } finally {
     withdrawLoading.value = false;
   }
@@ -738,7 +754,7 @@ watch(depositDialog, (newValue) => {
 
 const allWallet = () => {
   withdrawAmount.value = wallet.value.balance;
-  limitWithdrawInput()
+  limitWithdrawInput();
 };
 
 onMounted(() => {
