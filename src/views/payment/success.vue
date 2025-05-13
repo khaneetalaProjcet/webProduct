@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <div>
+    <!-- <div>
       <div class="alert-box">
         <tickIcon />
         <p class="mx-2">عملیات موفق</p>
@@ -11,6 +11,26 @@
           <p>عنوان:</p>
           <p>خرید از مجموعه خانه طلا</p>
         </div>
+      </div>
+      <div>
+        <v-btn color="#876824" class="mt-2" @click="backHome"
+          >بازگشت به صفحه اصلی {{ timer }}</v-btn
+        >
+      </div>
+    </div> -->
+
+    <div>
+      <div class="d-flex">
+        <img
+          src="/src/assets/images/payment-success.png"
+          alt="پرداخت موفق"
+          class="payment-image"
+        />
+      </div>
+      <div class="my-8">
+        <p class="payment-text">
+          پرداخت شما با <span class="text-red">موفقیت</span> انجام شد
+        </p>
       </div>
       <div>
         <v-btn color="#876824" class="mt-2" @click="backHome"
@@ -99,5 +119,16 @@ onMounted(() => {
   align-items: center;
   padding: 0.8rem 0;
   border-bottom: 1px solid rgba(214, 214, 214, 1);
+}
+
+.payment-image {
+  max-width: 100%;
+  height: auto;
+  width: 20rem;
+}
+
+.payment-text {
+  font-size: 24px;
+  font-weight: bold;
 }
 </style>
