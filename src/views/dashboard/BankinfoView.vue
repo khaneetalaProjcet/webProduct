@@ -300,6 +300,8 @@
       </v-card>
     </v-dialog>
 
+    
+
     <v-dialog v-model="withdrawDialog" width="500">
       <v-card class="cart-Dialog">
         <div class="title my-1">
