@@ -16,6 +16,13 @@ const TradeService = {
     return response.data;
   },
 
+  async complateBehpardakhtTransaction(paymentInfo) {
+    console.log('test')
+    const body = JSON.stringify(paymentInfo);
+    const response = await TradeTemplate.post("/buy/behpardakht", body);
+    return response.data;
+  },
+
   async GoldBoxBuyTransactions(filterTransactions) {
     const body = JSON.stringify(filterTransactions);
     const response = await QueryTemplate.post("/buytransactions", body);
@@ -68,6 +75,15 @@ const TradeService = {
       cartId: cartId,
     });
     const response = await TradeTemplate.post("/deposit", body);
+    return response.data;
+  },
+
+  async DepositWalletBehpardakht(depositDetail, cartId) {
+    const body = JSON.stringify({
+      amount: depositDetail,
+      cartId: cartId,
+    });
+    const response = await TradeTemplate.post("/deposit/behpardakht", body);
     return response.data;
   },
 

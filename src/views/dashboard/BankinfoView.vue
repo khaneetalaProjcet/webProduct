@@ -256,7 +256,11 @@
         <div class="my-1">
           <p>مبلغ مورد نظر را جهت واریز وارد نمایید</p>
         </div>
-        <v-form ref="form" v-model="isValidcharge" @submit.prevent="deposit">
+        <v-form
+          ref="form"
+          v-model="isValidcharge"
+          @submit.prevent="behpardakhtDeposit"
+        >
           <v-text-field
             v-model="priceAmount"
             variant="outlined"
@@ -299,8 +303,6 @@
         </v-form>
       </v-card>
     </v-dialog>
-
-    
 
     <v-dialog v-model="withdrawDialog" width="500">
       <v-card class="cart-Dialog">
@@ -530,6 +532,48 @@ const GetGoldPrice = async () => {
     }, 10000);
   } finally {
     GoldPriceLoading.value = false;
+  }
+};
+
+const behpardakhtDeposit = async () => {
+  try {
+    depositLoading.value = true;
+    const cleanedAmount = priceAmount.value.replaceAll(",", "");
+    const response = await TradeService.DepositWalletBehpardakht(
+      cleanedAmount,
+      cartId.value
+    );
+
+    const RefId = response.data;
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "https://bpm.shaparak.ir/pgwchannel/startpay.mellat";
+    // form.target = "_blank";
+
+    const refIdInput = document.createElement("input");
+    // refIdInput.type = "hidden";
+    refIdInput.name = "RefId";
+    refIdInput.value = RefId;
+    form.appendChild(refIdInput);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    // paymentUrl.value = response.data;
+    // window.location.href = paymentUrl.value;
+    return response;
+  } catch (error) {
+    console.log(error)
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    errorDialog.value = true;
+    setTimeout(() => {
+      errorDialog.value = false;
+    }, 5000);
+  } finally {
+    depositLoading.value = false;
   }
 };
 
@@ -766,18 +810,18 @@ onMounted(() => {
   withdrawTransaction();
   getCarts();
 
-  const zarinpal = ref({
-    authority: route.query.Authority,
-    status: route.query.Status,
-  });
-  if (zarinpal.value.authority && zarinpal.value.status) {
-    VerifyDeposit(zarinpal.value);
-    if (zarinpal.value.status === "OK") {
-      router.push({ name: "success", query: verifyDetail.value });
-    } else {
-      router.push({ name: "failed", query: verifyDetail.value });
-    }
-  }
+  // const zarinpal = ref({
+  //   authority: route.query.Authority,
+  //   status: route.query.Status,
+  // });
+  // if (zarinpal.value.authority && zarinpal.value.status) {
+  //   VerifyDeposit(zarinpal.value);
+  //   if (zarinpal.value.status === "OK") {
+  //     router.push({ name: "success", query: verifyDetail.value });
+  //   } else {
+  //     router.push({ name: "failed", query: verifyDetail.value });
+  //   }
+  // }
 });
 </script>
 

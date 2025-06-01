@@ -627,14 +627,28 @@ const CompleteBuy = async (paymentMethod) => {
       paymentInfo.value.isFromWallet = false;
     }
     paymentInfo.value.amount = buyInfo.value.goldprice;
-    const response = await TradeService.complateTransaction(paymentInfo.value);
+    const response = await TradeService.complateBehpardakhtTransaction(
+      paymentInfo.value
+    );
     if (response.isFromWallet == true) {
       buyModal.value = false;
       router.replace("/");
     } else {
-      invoice.value.paymentUrl = response.paymentUrl;
+      const RefId = response.data;
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://bpm.shaparak.ir/pgwchannel/startpay.mellat";
+      // form.target = "_blank";
+
+      const refIdInput = document.createElement("input");
+      // refIdInput.type = "hidden";
+      refIdInput.name = "RefId";
+      refIdInput.value = RefId;
+      form.appendChild(refIdInput);
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
       invoice.value.invoiceId = response.invoiceId;
-      window.location.href = invoice.value.paymentUrl;
     }
     return response;
   } catch (error) {
@@ -649,9 +663,45 @@ const CompleteBuy = async (paymentMethod) => {
     }, 5000);
   } finally {
     loading.value = false;
-    Transaction();
+    buyTransaction();
+    sellTransaction();
   }
 };
+
+// const CompleteBuy = async (paymentMethod) => {
+//   try {
+//     loading.value = true;
+//     if (paymentMethod == "wallet") {
+//       paymentInfo.value.isFromWallet = true;
+//     } else {
+//       paymentInfo.value.isFromWallet = false;
+//     }
+//     paymentInfo.value.amount = buyInfo.value.goldprice;
+//     const response = await TradeService.complateTransaction(paymentInfo.value);
+//     if (response.isFromWallet == true) {
+//       buyModal.value = false;
+//       router.replace("/");
+//     } else {
+//       invoice.value.paymentUrl = response.paymentUrl;
+//       invoice.value.invoiceId = response.invoiceId;
+//       window.location.href = invoice.value.paymentUrl;
+//     }
+//     return response;
+//   } catch (error) {
+//     if (error.response.status == 401) {
+//       localStorage.clear();
+//       router.replace("/Login");
+//     }
+//     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+//     alertError.value = true;
+//     setTimeout(() => {
+//       alertError.value = false;
+//     }, 5000);
+//   } finally {
+//     loading.value = false;
+//     Transaction();
+//   }
+// };
 
 const CreateSell = async () => {
   try {
@@ -708,7 +758,8 @@ const CompleteSell = async () => {
     }, 5000);
   } finally {
     sellLoading.value = false;
-    Transaction();
+    buyTransaction();
+    sellTransaction();
   }
 };
 
@@ -788,7 +839,7 @@ onMounted(() => {
   sellTransaction();
   setInterval(() => {
     GetGoldPrice();
-  }, 1000*60*2);
+  }, 1000 * 60 * 2);
 
   const zarinpal = ref({
     authority: route.query.Authority,

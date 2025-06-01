@@ -1198,7 +1198,7 @@ const UseGoldTransactionheaders = ref([
     title: "وزن طلا(گرم)",
     key: "goldWeight",
   },
-    {
+  {
     title: "قیمت نهایی(تومان)",
     key: "totalPrice",
   },
@@ -1233,11 +1233,11 @@ const Transactionheaders = ref([
     key: "goldWeight",
   },
   {
-    title: "قیمت نهایی",
+    title: "قیمت نهایی(تومان)",
     key: "totalPrice",
   },
   {
-    title: "قیمت طلا در لحظه",
+    title: "قیمت طلا در لحظه(تومان)",
     key: "goldPrice",
   },
   {
@@ -1655,7 +1655,9 @@ const CompleteBuy = async (paymentMethod) => {
       paymentInfo.value.isFromWallet = false;
     }
     // paymentInfo.value.amount = buyInfo.value.goldprice;
-    const response = await TradeService.complateTransaction(paymentInfo.value);
+    const response = await TradeService.complateBehpardakhtTransaction(
+      paymentInfo.value
+    );
     if (response.isFromWallet == true) {
       buyModal.value = false;
       doneText.value = response.msg;
@@ -1665,9 +1667,21 @@ const CompleteBuy = async (paymentMethod) => {
         router.replace("/");
       }, 5000);
     } else {
-      invoice.value.paymentUrl = response.paymentUrl;
+      const RefId = response.data;
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://bpm.shaparak.ir/pgwchannel/startpay.mellat";
+      // form.target = "_blank";
+
+      const refIdInput = document.createElement("input");
+      // refIdInput.type = "hidden";
+      refIdInput.name = "RefId";
+      refIdInput.value = RefId;
+      form.appendChild(refIdInput);
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
       invoice.value.invoiceId = response.invoiceId;
-      window.location.href = invoice.value.paymentUrl;
     }
     return response;
   } catch (error) {
@@ -1687,6 +1701,49 @@ const CompleteBuy = async (paymentMethod) => {
     buyTransaction();
   }
 };
+
+// const CompleteBuy = async (paymentMethod) => {
+//   try {
+//     if (paymentMethod == "wallet") {
+//       walletPayLoading.value = true;
+//       paymentInfo.value.isFromWallet = true;
+//     } else {
+//       directPayLoading.value = true;
+//       paymentInfo.value.isFromWallet = false;
+//     }
+//     // paymentInfo.value.amount = buyInfo.value.goldprice;
+//     const response = await TradeService.complateTransaction(paymentInfo.value);
+//     if (response.isFromWallet == true) {
+//       buyModal.value = false;
+//       doneText.value = response.msg;
+//       successModal.value = true;
+//       setTimeout(() => {
+//         successModal.value = false;
+//         router.replace("/");
+//       }, 5000);
+//     } else {
+//       invoice.value.paymentUrl = response.paymentUrl;
+//       invoice.value.invoiceId = response.invoiceId;
+//       window.location.href = invoice.value.paymentUrl;
+//     }
+//     return response;
+//   } catch (error) {
+//     if (error.response.status == 401) {
+//       localStorage.clear();
+//       router.replace("/Login");
+//     }
+//     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+//     errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+//     errorDialog.value = true;
+//     setTimeout(() => {
+//       errorDialog.value = false;
+//     }, 5000);
+//   } finally {
+//     walletPayLoading.value = false;
+//     directPayLoading.value = false;
+//     buyTransaction();
+//   }
+// };
 
 const CreateSell = async () => {
   try {
@@ -2199,19 +2256,19 @@ onMounted(() => {
 
   walletUser.value = JSON.parse(localStorage.getItem("user"));
 
-  const zarinpal = ref({
-    authority: route.query.Authority,
-    status: route.query.Status,
-  });
+  // const zarinpal = ref({
+  //   authority: route.query.Authority,
+  //   status: route.query.Status,
+  // });
 
-  if (zarinpal.value.authority && zarinpal.value.status) {
-    VerifyTransaction(zarinpal.value);
-    if (zarinpal.value.status === "OK") {
-      router.push({ name: "success", state: verifyDetail.value });
-    } else {
-      router.push({ name: "failed", state: verifyDetail.value });
-    }
-  }
+  // if (zarinpal.value.authority && zarinpal.value.status) {
+  //   VerifyTransaction(zarinpal.value);
+  //   if (zarinpal.value.status === "OK") {
+  //     router.push({ name: "success", state: verifyDetail.value });
+  //   } else {
+  //     router.push({ name: "failed", state: verifyDetail.value });
+  //   }
+  // }
 });
 
 watch(buyModal, (newVal) => {
