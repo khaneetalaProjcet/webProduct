@@ -562,7 +562,7 @@ const behpardakhtDeposit = async () => {
     // window.location.href = paymentUrl.value;
     return response;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (error.response.status == 401) {
       localStorage.clear();
       router.replace("/Login");
@@ -1088,5 +1088,21 @@ onMounted(() => {
   align-items: center;
   border-right: 1px solid rgba(0, 147, 88, 0.3);
   background-color: #fff;
+}
+
+.transferModal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.transferModal-content p {
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .transferModal-content p {
+    font-size: 14px;
+  }
 }
 </style>
