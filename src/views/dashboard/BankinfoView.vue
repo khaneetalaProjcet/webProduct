@@ -326,9 +326,9 @@
               >
             </template>
           </v-text-field>
-          <div v-if="withdrawAmount">
+          <!-- <div v-if="withdrawAmount">
             <p class="amount-word">{{ amountInWords }}</p>
-          </div>
+          </div> -->
           <v-select
             v-model="selectCartId"
             :loading="cartsLoading"
@@ -759,19 +759,19 @@ const filterChange = (filterValue) => {
   withdrawTransaction();
 };
 
-const amountInWords = computed(() => {
-  if (withdrawAmount.value) {
-    const amountWithoutCommas = withdrawAmount.value.replace(/,/g, "");
-    const amountInRial = parseInt(amountWithoutCommas, 10);
+// const amountInWords = computed(() => {
+//   if (withdrawAmount.value) {
+//     const amountWithoutCommas = withdrawAmount.value.replace(/,/g, "");
+//     const amountInRial = parseInt(amountWithoutCommas, 10);
 
-    if (amountInRial < 1) {
-      return "کمتر از یک تومان";
-    }
+//     if (amountInRial < 1) {
+//       return "کمتر از یک تومان";
+//     }
 
-    return numberToWords(Math.floor(amountInRial)) + " تومان";
-  }
-  return "";
-});
+//     return numberToWords(Math.floor(amountInRial)) + " تومان";
+//   }
+//   return "";
+// });
 
 //const DepositeAmountInWords = computed(() => {
 //  if (priceAmount.value) {
