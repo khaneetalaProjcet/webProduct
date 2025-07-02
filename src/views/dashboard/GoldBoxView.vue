@@ -74,7 +74,7 @@
                         >
                       </template>
                     </v-text-field>
-                    <p class="price-in-word">{{ BuyAmountInWords }}</p>
+                    <!-- <p class="price-in-word">{{ BuyAmountInWords }}</p> -->
                   </div>
                 </div>
               </v-col>
@@ -176,7 +176,7 @@
                       class="transition-field goldconvert-input"
                       @input="sellGoldpriceConvert"
                     ></v-text-field>
-                    <p class="price-in-word">{{ SellAmountInWords }}</p>
+                    <!-- <p class="price-in-word">{{ SellAmountInWords }}</p> -->
                   </div>
                 </div>
               </v-col>
@@ -1375,37 +1375,37 @@ const formatNumber = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-const BuyAmountInWords = computed(() => {
-  if (buyInfo.value.goldprice && buyInfo.value.goldprice != "") {
-    const amountWithoutCommas = buyInfo.value.goldprice
-      .toString()
-      .replace(/,/g, "");
-    const amountInRial = parseInt(amountWithoutCommas, 10);
+// const BuyAmountInWords = computed(() => {
+//  if (buyInfo.value.goldprice && buyInfo.value.goldprice != "") {
+//    const amountWithoutCommas = buyInfo.value.goldprice
+//      .toString()
+//      .replace(/,/g, "");
+//    const amountInRial = parseInt(amountWithoutCommas, 10);
+//
+//    if (amountInRial < 1) {
+//      return "کمتر از یک تومان";
+//    }
+//
+//    return numberToWords(Math.floor(amountInRial)) + " تومان";
+//  }
+//  return "";
+//});
 
-    if (amountInRial < 1) {
-      return "کمتر از یک تومان";
-    }
+// const SellAmountInWords = computed(() => {
+//   if (sellInfo.value.goldPrice && sellInfo.value.goldPrice != "") {
+//     const amountWithoutCommas = sellInfo.value.goldPrice
+//       .toString()
+//       .replace(/,/g, "");
+//     const amountInRial = parseInt(amountWithoutCommas, 10);
 
-    return numberToWords(Math.floor(amountInRial)) + " تومان";
-  }
-  return "";
-});
+//     if (amountInRial < 1) {
+//       return "کمتر از یک تومان";
+//     }
 
-const SellAmountInWords = computed(() => {
-  if (sellInfo.value.goldPrice && sellInfo.value.goldPrice != "") {
-    const amountWithoutCommas = sellInfo.value.goldPrice
-      .toString()
-      .replace(/,/g, "");
-    const amountInRial = parseInt(amountWithoutCommas, 10);
-
-    if (amountInRial < 1) {
-      return "کمتر از یک تومان";
-    }
-
-    return numberToWords(Math.floor(amountInRial)) + " تومان";
-  }
-  return "";
-});
+//     return numberToWords(Math.floor(amountInRial)) + " تومان";
+//   }
+//   return "";
+// });
 
 const GetGoldPrice = async () => {
   try {
