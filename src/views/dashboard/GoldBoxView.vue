@@ -661,6 +661,18 @@
               :rules="[(v) => !!v || 'لطفا کارت خود را انتخاب کنید']"
             >
             </v-select>
+
+            <!-- <label>انتخاب کارت</label>
+            <select
+              v-model="paymentInfo.cartId"
+              class="pa-3"
+              style="width: 100%; border-radius: 8px"
+            >
+              <option disabled value="">لطفا کارت خود را انتخاب کنید</option>
+              <option v-for="cart in carts" :key="cart.id" :value="cart.id">
+                {{ cart.cardNumber }}
+              </option>
+            </select> -->
           </v-col>
           <v-col cols="12">
             <v-alert
@@ -1056,6 +1068,21 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog max-width="600" v-model="updateDialog" class="trade-modal">
+      <v-card class="trade-modal">
+        <div class="transferModal-content py-5">
+          <h3>به روز رسانی</h3>
+          <img
+            src="/src/assets/images/update.svg"
+            alt="خطا"
+            width="150"
+            height="150"
+          />
+          <p class="text-lg">{{ updateMsg }}</p>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <v-alert
       v-if="alertError"
       color="error"
@@ -1094,6 +1121,8 @@ import { useUserStore } from "@/stores/user/userStore";
 const userStore = useUserStore();
 const route = useRoute();
 
+const updateDialog = ref(false);
+const updateMsg = ref("");
 const errorDialog = ref(false);
 const successModal = ref(false);
 const transferModal = ref(false);
@@ -1184,7 +1213,6 @@ const TransferTransactionheaders = ref([
     key: "status",
   },
 ]);
-
 const UseGoldTransactionheaders = ref([
   {
     title: "تاریخ",
@@ -1646,6 +1674,7 @@ const CreateBuy = async () => {
 };
 
 const CompleteBuy = async (paymentMethod) => {
+  console.log(paymentInfo.value.cartId);
   try {
     if (paymentMethod == "wallet") {
       walletPayLoading.value = true;
@@ -1688,13 +1717,19 @@ const CompleteBuy = async (paymentMethod) => {
     if (error.response.status == 401) {
       localStorage.clear();
       router.replace("/Login");
+    } else if (error.response.status == 503) {
+      updateMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+      updateDialog.value = true;
+      setTimeout(() => {
+        updateDialog.value = false;
+      }, 5000);
+    } else {
+      errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+      errorDialog.value = true;
+      setTimeout(() => {
+        errorDialog.value = false;
+      }, 5000);
     }
-    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    errorDialog.value = true;
-    setTimeout(() => {
-      errorDialog.value = false;
-    }, 5000);
   } finally {
     walletPayLoading.value = false;
     directPayLoading.value = false;

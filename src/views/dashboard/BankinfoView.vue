@@ -268,7 +268,6 @@
             density="compact"
             label="مبلغ (تومان)"
             class="mb-0 mt-2"
-            
             @input="limitInput"
           ></v-text-field>
           <!-- <div v-if="priceAmount">
@@ -384,6 +383,21 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <v-dialog max-width="600" v-model="updateDialog" class="trade-modal">
+      <v-card class="trade-modal">
+        <div class="transferModal-content py-5">
+          <h3>به روز رسانی</h3>
+          <img
+            src="/src/assets/images/update.svg"
+            alt="خطا"
+            width="150"
+            height="150"
+          />
+          <p class="text-lg">{{ updateMsg }}</p>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -399,6 +413,8 @@ import InfoIcon from "@/assets/images/icons/InfoIcon.vue";
 
 const route = useRoute();
 
+const updateDialog = ref(false);
+const updateMsg = ref("");
 const selectCartId = ref("");
 const errorMsg = ref("");
 const alertError = ref(false);
@@ -566,12 +582,24 @@ const behpardakhtDeposit = async () => {
     if (error.response.status == 401) {
       localStorage.clear();
       router.replace("/Login");
+    } else if (error.response.status == 503) {
+      updateMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+      updateDialog.value = true;
+      setTimeout(() => {
+        updateDialog.value = false;
+      }, 5000);
+    } else {
+      errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+      errorDialog.value = true;
+      setTimeout(() => {
+        errorDialog.value = false;
+      }, 5000);
     }
-    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
-    errorDialog.value = true;
-    setTimeout(() => {
-      errorDialog.value = false;
-    }, 5000);
+    // errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    // errorDialog.value = true;
+    // setTimeout(() => {
+    //   errorDialog.value = false;
+    // }, 5000);
   } finally {
     depositLoading.value = false;
   }
