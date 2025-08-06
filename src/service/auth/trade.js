@@ -35,6 +35,12 @@ const TradeService = {
     return response.data;
   },
 
+  async CartToCartTransactions(detail) {
+    const body = JSON.stringify(detail);
+    const response = await TradeTemplate.post("/completebuy/transport", body);
+    return response.data;
+  },
+
   async GoldBoxTransferTransactions(filterTransactions) {
     const response = await QueryTemplate.get(`/user/transports?status=${filterTransactions.status}`);
     return response.data;

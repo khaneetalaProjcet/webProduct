@@ -49,9 +49,9 @@ app.use(
     displayFormat: 'jYYYY-jMM-jDD',
     editable: false,
     inputClass: 'form-control my-perian-datepicker',
-    placeholder: 'تاریخ تولد',
+    placeholder: 'تاریخ',
     altFormat: 'YYYYMMDD',
-    color: '#ae8947',
+    color: '#00603a',
     autoSubmit: true,
   }
 }

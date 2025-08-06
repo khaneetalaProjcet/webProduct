@@ -674,7 +674,7 @@
               </option>
             </select> -->
           </v-col>
-          <v-col cols="12">
+          <!-- <v-col cols="12">
             <v-alert
               class="ma-0 text-center modal-alert"
               color="error"
@@ -683,7 +683,7 @@
               پس از <span class="timer-color">{{ timer }}</span> ثانیه، فاکتور
               شما منقضی میشود
             </v-alert>
-          </v-col>
+          </v-col> -->
           <v-col cols="12" md="6" class="py-1 py-md-2">
             <v-btn
               text="پرداخت مستقیم"
@@ -706,6 +706,15 @@
               block
             ></v-btn>
           </v-col>
+          <!-- <v-col cols="12" class="py-1 py-md-2 mt-2">
+            <v-btn
+              text="کارت به کارت"
+              class="pay-btn"
+              color="#00603a"
+              @click="submitCartToCartDialog = true"
+              block
+            ></v-btn>
+          </v-col> -->
         </v-row>
       </v-card>
     </v-dialog>
@@ -1048,7 +1057,7 @@
             width="200"
             height="200"
           />
-          <p>{{ doneText }}</p>
+          <p class="done-text">{{ doneText }}</p>
         </div>
       </v-card>
     </v-dialog>
@@ -1071,15 +1080,51 @@
     <v-dialog max-width="600" v-model="updateDialog" class="trade-modal">
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
-          <h3>به روز رسانی</h3>
-          <img
-            src="/src/assets/images/update.svg"
-            alt="خطا"
-            width="150"
-            height="150"
-          />
-          <p class="text-lg">{{ updateMsg }}</p>
+          <img src="/src/assets/images/success-done.jpg" alt="خطا" width="150" height="150" />
+          <!-- <p class="text-lg text-center">{{ updateMsg }}</p> -->
+           <div class="text-start">
+           <p class="my-1">همراه گرامی;</p>
+           <p class="my-2">لطفا جهت شارژ کیف پول به آیدی زیر در تلگرام مراجعه کنید.</p>
+           <a class="my-1" href="https://t.me/khanetalaaa" target="_blank">https://t.me/khanetalaaa</a>
+           </div>
         </div>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="submitCartToCartDialog" max-width="600">
+      <v-card class="cart-Dialog">
+        <div class="my-1">
+          <p>
+            لطفا مبلغ
+            <span class="red-bold"
+              >{{ formatNumber(buyPaymentInfo.totalPrice) }} تومان</span
+            >
+            را به شماره کارت زیر واریز نمایید
+          </p>
+        </div>
+        <div class="title my-2">
+          <p class="py-1">6037701634432717</p>
+          <p class="py-1">120160000000000869153471</p>
+          <p class="py-1">مطهر معصومی</p>
+        </div>
+        <v-text-field
+          v-model="trackCode"
+          variant="outlined"
+          color="rgba(135, 104, 36, 1)"
+          density="compact"
+          label="شماره پیگیری واریز"
+          class="mb-0 mt-2"
+        ></v-text-field>
+        <v-btn
+          type="submit"
+          text="تایید خرید"
+          color="#00603a"
+          class="submit-cart-btn"
+          :loading="cartToCartLoading"
+          :disabled="trackCode == ''"
+          @click="submitCartToCart()"
+          block
+        ></v-btn>
       </v-card>
     </v-dialog>
 
@@ -1121,6 +1166,9 @@ import { useUserStore } from "@/stores/user/userStore";
 const userStore = useUserStore();
 const route = useRoute();
 
+const trackCode = ref("");
+const submitCartToCartDialog = ref(false);
+const cartToCartLoading = ref(false);
 const updateDialog = ref(false);
 const updateMsg = ref("");
 const errorDialog = ref(false);
@@ -1722,7 +1770,7 @@ const CompleteBuy = async (paymentMethod) => {
       updateDialog.value = true;
       setTimeout(() => {
         updateDialog.value = false;
-      }, 5000);
+      }, 15000);
     } else {
       errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
       errorDialog.value = true;
@@ -1881,6 +1929,37 @@ const sellTransaction = async () => {
     }, 5000);
   } finally {
     TransactionLoading.value = false;
+  }
+};
+
+const submitCartToCart = async () => {
+  try {
+    cartToCartLoading.value = true;
+    let detail = {
+      trackId: trackCode.value,
+      transActionId: paymentInfo.value.invoiceId,
+    };
+    const response = await TradeService.CartToCartTransactions(detail);
+    submitCartToCartDialog.value = false;
+    buyModal.value = false;
+    doneText.value = response.msg;
+    successModal.value = true;
+    setTimeout(() => {
+      successModal.value = false;
+    }, 5000);
+    return response;
+  } catch (error) {
+    if (error.response.status == 401) {
+      localStorage.clear();
+      router.replace("/Login");
+    }
+    errorMsg.value = error.response.data.msg || "خطایی رخ داده است!";
+    alertError.value = true;
+    setTimeout(() => {
+      alertError.value = false;
+    }, 5000);
+  } finally {
+    cartToCartLoading.value = false;
   }
 };
 
@@ -2306,14 +2385,14 @@ onMounted(() => {
   // }
 });
 
-watch(buyModal, (newVal) => {
-  if (newVal) {
-    timer.value = 30;
-    startTimer();
-  } else {
-    stopTimer();
-  }
-});
+// watch(buyModal, (newVal) => {
+//   if (newVal) {
+//     timer.value = 30;
+//     startTimer();
+//   } else {
+//     stopTimer();
+//   }
+// });
 
 watch(sellModal, (newVal) => {
   if (newVal) {
@@ -2333,6 +2412,7 @@ const startTimer = () => {
       stopTimer();
       buyModal.value = false;
       sellModal.value = false;
+      submitCartToCartDialog.value = false;
       paymentInfo.value.cartId = null;
     }
   }, 1000);
@@ -2668,5 +2748,42 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.cart-Dialog {
+  border-radius: 16px !important;
+  padding: 2rem;
+}
+
+.cart-Dialog .title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffe7e7;
+  color: #ff0000;
+  padding: 0.4rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.cart-Dialog .title p {
+  margin: 0 0.3rem;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.submit-cart-btn {
+  height: 2.6rem !important;
+}
+
+.red-bold {
+  font-weight: bold;
+  color: #ff0000;
+  margin: 0 0.5rem;
+}
+
+.done-text {
+  text-align: center;
 }
 </style>

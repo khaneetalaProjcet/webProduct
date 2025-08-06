@@ -9,14 +9,14 @@ body {
 }
 
 .vpd-input-group {
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
   border-radius: 4px;
 }
 
 .vpd-input-group label {
   border-radius: 0 4px 4px 0;
 }
-
 
 .vpd-input-group input {
   padding: 8px 10px !important;
@@ -45,9 +45,6 @@ body {
   height: 50px !important;
 }
 
-
-
-
 .k-stepper {
   display: flex;
   align-items: start;
@@ -61,7 +58,7 @@ body {
 }
 
 /* active */
-.k-stepper .step.active>div {
+.k-stepper .step.active > div {
   border-color: rgba(176, 134, 59, 1) !important;
   box-shadow: 0px 0px 2px 0px rgba(175, 139, 74, 0.84);
 }
@@ -74,9 +71,8 @@ body {
   color: rgba(176, 134, 59, 1) !important;
 }
 
-
 /* verified */
-.k-stepper .step.verified>div {
+.k-stepper .step.verified > div {
   border-color: #00603a !important;
   box-shadow: 0px 0px 2px 0px #00603a;
 }
@@ -89,8 +85,7 @@ body {
   color: #00603a !important;
 }
 
-
-.k-stepper .step>div {
+.k-stepper .step > div {
   width: 18px;
   height: 18px;
   border: 1px solid rgba(189, 189, 189, 1);
@@ -187,6 +182,12 @@ body {
   color: #fff;
 }
 
-.goldconvert-input .v-field.v-field--appended{
+.goldconvert-input .v-field.v-field--appended {
   padding: 0 !important;
+}
+
+.vpd-input-group {
+  border-radius: 8px !important;
+  border: 1px solid rgb(114, 114, 114) !important;
+  box-shadow: none !important;
 }
