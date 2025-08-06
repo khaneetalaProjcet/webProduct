@@ -295,7 +295,7 @@
     <v-dialog max-width="600" v-model="updateDialog" class="trade-modal">
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
-          <img src="/src/assets/images/success-done.jpg" alt="خطا" width="150" height="150" />
+          <img src="/src/assets/images/error.jpg" alt="خطا" width="150" height="150" />
           <!-- <p class="text-lg text-center">{{ updateMsg }}</p> -->
            <div class="text-start">
            <p class="my-1">همراه گرامی;</p>

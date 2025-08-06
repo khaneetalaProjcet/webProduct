@@ -685,7 +685,7 @@
             </v-alert>
           </v-col> -->
           <v-col cols="12" md="6" class="py-1 py-md-2">
-            <v-btn
+            <!-- <v-btn
               text="پرداخت مستقیم"
               class="pay-btn"
               color="#00603a"
@@ -693,6 +693,15 @@
               :disabled="!paymentInfo.cartId"
               @click="CompleteBuy('direct')"
               block
+            ></v-btn> -->
+              <v-btn
+              text="پرداخت مستقیم"
+              class="pay-btn"
+              color="#00603a"
+              :loading="directPayLoading"
+              @click="CompleteBuy('direct')"
+              block
+              disabled
             ></v-btn>
           </v-col>
           <v-col cols="12" md="6" class="py-1 py-md-2">
@@ -1065,7 +1074,7 @@
     <v-dialog max-width="600" v-model="errorDialog" class="trade-modal">
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
-          <h3>خطا</h3>
+          <!-- <h3>خطا</h3> -->
           <img
             src="/src/assets/images/error.jpg"
             alt="خطا"
@@ -1080,10 +1089,10 @@
     <v-dialog max-width="600" v-model="updateDialog" class="trade-modal">
       <v-card class="trade-modal">
         <div class="transferModal-content py-5">
-          <img src="/src/assets/images/success-done.jpg" alt="خطا" width="150" height="150" />
+          <img src="/src/assets/images/error.jpg" alt="خطا" width="150" height="150" />
           <!-- <p class="text-lg text-center">{{ updateMsg }}</p> -->
            <div class="text-start">
-           <p class="my-1">همراه گرامی;</p>
+           <p class="my-6">کاربر گرامی موجودی شما کافی نیست.</p>
            <p class="my-2">لطفا جهت شارژ کیف پول به آیدی زیر در تلگرام مراجعه کنید.</p>
            <a class="my-1" href="https://t.me/khanetalaaa" target="_blank">https://t.me/khanetalaaa</a>
            </div>
