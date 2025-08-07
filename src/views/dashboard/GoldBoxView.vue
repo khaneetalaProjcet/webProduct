@@ -674,6 +674,11 @@
               </option>
             </select> -->
           </v-col>
+          <v-col cols="12">
+            <div class="buy-error-title my-2">
+            <p>کاربر گرامی پرداخت فاکتور فقط از کیف پول امکان پذیر است</p>
+          </div>
+          </v-col>
           <!-- <v-col cols="12">
             <v-alert
               class="ma-0 text-center modal-alert"
@@ -1171,6 +1176,7 @@ import router from "@/router";
 import { numberToWords } from "@persian-tools/persian-tools";
 import AuthService from "@/service/auth/auth";
 import { useUserStore } from "@/stores/user/userStore";
+import InfoIcon from "@/assets/images/icons/InfoIcon.vue";
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -2794,5 +2800,26 @@ onUnmounted(() => {
 
 .done-text {
   text-align: center;
+}
+
+.buy-error-title{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 147, 88, 0.1);
+  color: #00603a;
+  padding: 0.4rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.buy-error-title p {
+  margin: 0 0.3rem;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.buy-error-title svg {
+  filter: invert(19%) sepia(88%) saturate(7474%) hue-rotate(358deg) brightness(94%) contrast(109%);
 }
 </style>
